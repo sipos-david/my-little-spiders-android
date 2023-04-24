@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shipi.mylittlespiders.domain.model.Friend
 import dev.shipi.mylittlespiders.domain.usecase.CheckNetworkState
+import dev.shipi.mylittlespiders.domain.usecase.DeleteFriend
 import dev.shipi.mylittlespiders.domain.usecase.GetFriendList
 import dev.shipi.mylittlespiders.domain.usecase.RefreshFriendList
 import dev.shipi.mylittlespiders.lib.presentation.ViewState
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     private val refreshFriendList: RefreshFriendList,
     private val getFriendList: GetFriendList,
+    private val deleteFriend: DeleteFriend,
     private val checkNetworkState: CheckNetworkState
 ) : ViewModel() {
 
@@ -33,10 +35,22 @@ class ListViewModel @Inject constructor(
 
     fun refreshList() {
         viewModelScope.launch {
-            _state.update { ViewState.Loading }
-            refreshFriendList()
-            getData()
+            refresh()
         }
+    }
+
+
+    fun onDeleteFriend(friendId: Long) {
+        viewModelScope.launch {
+            deleteFriend(friendId)
+            refresh()
+        }
+    }
+
+    private suspend fun refresh() {
+        _state.update { ViewState.Loading }
+        refreshFriendList()
+        getData()
     }
 
     private suspend fun getData() {

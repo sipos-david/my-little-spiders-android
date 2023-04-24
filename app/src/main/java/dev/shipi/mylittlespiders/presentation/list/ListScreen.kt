@@ -32,6 +32,7 @@ fun ListScreen(
     ListView(
         state = state,
         onListRefresh = viewModel::refreshList,
+        onDeleteFriend = viewModel::onDeleteFriend,
         onNavigateToViewFriend = onNavigateToViewFriend,
         onNavigateToUpdateFriend = onNavigateToUpdateFriend,
         onNavigateToAddFriend = onNavigateToAddFriend
@@ -42,6 +43,7 @@ fun ListScreen(
 fun ListView(
     state: ViewState<List<Friend>>,
     onListRefresh: () -> Unit,
+    onDeleteFriend: (Long) -> Unit,
     onNavigateToViewFriend: (Long) -> Unit,
     onNavigateToUpdateFriend: (Long) -> Unit,
     onNavigateToAddFriend: () -> Unit,
@@ -64,7 +66,12 @@ fun ListView(
             }
             LazyColumn {
                 items(state.data) { friend ->
-                    FriendRow(friend, onNavigateToViewFriend, onNavigateToUpdateFriend)
+                    FriendRow(
+                        friend,
+                        onDeleteFriend,
+                        onNavigateToViewFriend,
+                        onNavigateToUpdateFriend
+                    )
                 }
             }
         }
@@ -91,5 +98,5 @@ class ListStatePreviewProvider : PreviewParameterProvider<ViewState<List<Friend>
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun ListViewPreview(@PreviewParameter(ListStatePreviewProvider::class) state: ViewState<List<Friend>>) {
-    ListView(state = state, {}, {}, {}, {})
+    ListView(state = state, {}, {}, {}, {}, {})
 }
