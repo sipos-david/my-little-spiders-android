@@ -7,13 +7,19 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.shipi.mylittlespiders.presentation.details.DetailsScreen
 import dev.shipi.mylittlespiders.presentation.details.DetailsViewModel
+import dev.shipi.mylittlespiders.presentation.entry.add.AddEntryScreen
+import dev.shipi.mylittlespiders.presentation.entry.add.AddEntryViewModel
+import dev.shipi.mylittlespiders.presentation.entry.update.UpdateEntryScreen
+import dev.shipi.mylittlespiders.presentation.entry.update.UpdateEntryViewModel
 
 import dev.shipi.mylittlespiders.presentation.friend.add.AddFriendScreen
 import dev.shipi.mylittlespiders.presentation.friend.add.AddFriendViewModel
@@ -29,6 +35,8 @@ class MainActivity : ComponentActivity() {
     private val addFriendViewModel: AddFriendViewModel by viewModels()
     private val detailsViewModel: DetailsViewModel by viewModels()
     private val updateFriendViewModel: UpdateFriendViewModel by viewModels()
+    private val addEntryViewModel: AddEntryViewModel by viewModels()
+    private val updateEntryViewModel: UpdateEntryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,10 +63,47 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        composable("details/{friendId}") { backStackEntry ->
-                            detailsViewModel.showFriendDetails(backStackEntry.arguments?.getString("friendId"))
-                            DetailsScreen(detailsViewModel)
+                        navigation(
+                            route = "details/{friendId}",
+                            startDestination = "/",
+                        ) {
+                            composable(route = "/") { entry ->
+                                val parentEntry =
+                                    remember(entry) { navController.getBackStackEntry("details/{friendId}") }
+                                val friendId = parentEntry.arguments?.getString("friendId")
+                                detailsViewModel.showFriendDetails(friendId)
+                                DetailsScreen(viewModel = detailsViewModel,
+                                    onNavigateToAddEntry = {
+                                        navController.navigate("/add")
+                                    },
+                                    onNavigateToEditEntry = {
+                                        navController.navigate("/update/$it")
+                                    }
+                                )
+                            }
+                            composable(route = "/add") { entry ->
+                                val parentEntry =
+                                    remember(entry) { navController.getBackStackEntry("details/{friendId}") }
+                                val friendId = parentEntry.arguments?.getString("friendId")
+                                addEntryViewModel.showEntryDetails(friendId)
+                                AddEntryScreen(viewModel = addEntryViewModel) {
+                                    navController.navigate("details/$friendId")
+                                }
+                            }
+                            composable(route = "/update/{entryId}") { entry ->
+                                val parentEntry =
+                                    remember(entry) { navController.getBackStackEntry("details/{friendId}") }
+                                val friendId = parentEntry.arguments?.getString("friendId")
+                                updateEntryViewModel.showEntryDetails(
+                                    friendId,
+                                    entry.arguments?.getString("entryId")
+                                )
+                                UpdateEntryScreen(viewModel = updateEntryViewModel) {
+                                    navController.navigate("details/$friendId")
+                                }
+                            }
                         }
+
                         composable("add-friend") {
                             AddFriendScreen(viewModel = addFriendViewModel) {
                                 listViewModel.refreshList()

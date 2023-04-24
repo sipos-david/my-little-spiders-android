@@ -1,14 +1,13 @@
 package dev.shipi.mylittlespiders.presentation.entry
 
 import dev.shipi.mylittlespiders.lib.presentation.Input
-import java.util.Date
+import java.time.LocalDate
 
 data class EntryFormState(
-    val title: String,
-    val submit: String,
-
-    val date: Input.Value<Date?>,
+    val friendId: Long,
+    val date: Input.Value<LocalDate?>,
     val text: Input.Value<String>,
     val respect: Input.Value<Int>,
-    val hasErrors: Boolean = true
+    val hasErrors: Boolean = true,
+    val entryId: Long? = null
 )

@@ -1,7 +1,11 @@
 package dev.shipi.mylittlespiders.presentation.details
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,16 +18,28 @@ import dev.shipi.mylittlespiders.domain.model.FriendDetails
 import dev.shipi.mylittlespiders.lib.presentation.ViewState
 import dev.shipi.mylittlespiders.presentation.details.view.EntryRow
 import java.lang.Exception
-import java.util.Date
+import java.time.LocalDate
 
 @Composable
-fun DetailsScreen(viewModel: DetailsViewModel) {
+fun DetailsScreen(
+    viewModel: DetailsViewModel,
+    onNavigateToAddEntry: () -> Unit,
+    onNavigateToEditEntry: (Long) -> Unit
+) {
     val state by viewModel.state.collectAsState()
-    Details(state = state)
+    Details(
+        state = state,
+        onNavigateToAddEntry = onNavigateToAddEntry,
+        onNavigateToEditEntry = onNavigateToEditEntry
+    )
 }
 
 @Composable
-fun Details(state: ViewState<FriendDetails>) {
+fun Details(
+    state: ViewState<FriendDetails>,
+    onNavigateToAddEntry: () -> Unit,
+    onNavigateToEditEntry: (Long) -> Unit
+) {
     when (state) {
         is ViewState.Loading -> CircularProgressIndicator()
         is ViewState.Error -> Text(text = "${state.e.message}")
@@ -36,9 +52,15 @@ fun Details(state: ViewState<FriendDetails>) {
                 Text(text = state.data.name)
                 Text(text = state.data.location)
                 Text(text = state.data.nightmares.toString())
+                FloatingActionButton(onClick = onNavigateToAddEntry) {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = "Add new entry!",
+                    )
+                }
                 Column {
                     state.data.entries.forEach {
-                        EntryRow(entry = it)
+                        EntryRow(entry = it, onNavigateToEditEntry = onNavigateToEditEntry)
                     }
                 }
             }
@@ -49,15 +71,15 @@ fun Details(state: ViewState<FriendDetails>) {
 class DetailsStatePreviewProvider : PreviewParameterProvider<ViewState<FriendDetails>> {
     private val details = FriendDetails(
         2, "Quentin Tarantula", "Movie room", 1, listOf(
-            Entry(0, Date(), "He suddenly appeared with a movie", 234),
-            Entry(1, Date(), "He made a website", 21),
+            Entry(0, LocalDate.now(), "He suddenly appeared with a movie", 234),
+            Entry(1, LocalDate.now(), "He made a website", 21),
             Entry(
                 2,
-                Date(),
+                LocalDate.now(),
                 "I finally had the courage to ask him how do other spiders find a partner? He said they usually meet on the web!",
                 12
             ),
-            Entry(3, Date(), "", 25),
+            Entry(3, LocalDate.now(), "", 25),
         )
     )
 
@@ -72,5 +94,5 @@ class DetailsStatePreviewProvider : PreviewParameterProvider<ViewState<FriendDet
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun DetailsPreview(@PreviewParameter(DetailsStatePreviewProvider::class) state: ViewState<FriendDetails>) {
-    Details(state = state)
+    Details(state = state, {}, {})
 }

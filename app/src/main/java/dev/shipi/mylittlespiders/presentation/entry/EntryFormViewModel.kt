@@ -7,13 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Date
+import java.time.LocalDate
 
-class EntryFormViewModel(
-    title: String,
-    submit: String,
-    private val onSubmit: suspend (name: Date, text: String, respect: Int) -> Unit
-) : ViewModel() {
+class EntryFormViewModel(friendId: Long) : ViewModel() {
 
     private val date = Input.RequiredDate()
     private val text = Input.RequiredString()
@@ -22,8 +18,7 @@ class EntryFormViewModel(
     private val _state =
         MutableStateFlow(
             EntryFormState(
-                title,
-                submit,
+                friendId,
                 date.input,
                 text.input,
                 respect.input
@@ -31,7 +26,15 @@ class EntryFormViewModel(
         )
     val state = _state.asStateFlow()
 
-    fun setDate(value: Date) {
+    fun setId(value: Long?) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(entryId = value)
+            }
+        }
+    }
+
+    fun setDate(value: LocalDate) {
         viewModelScope.launch {
             _state.update {
                 date.set(value)
@@ -58,29 +61,11 @@ class EntryFormViewModel(
         }
     }
 
-    fun onSubmit() {
-        viewModelScope.launch {
-            if (hasErrors()) {
-                onSubmit(
-                    date.input.value ?: Date(),
-                    text.input.value,
-                    respect.input.value
-                )
-            }
-        }
-    }
-
-    private fun hasErrors(): Boolean {
+    fun hasErrors(): Boolean {
         return date.input.hasError || text.input.hasError || respect.input.hasError
     }
 
     companion object {
-        fun create(
-            title: String,
-            submit: String,
-            onSubmit: suspend (date: Date, text: String, respect: Int) -> Unit
-        ): EntryFormViewModel {
-            return EntryFormViewModel(title, submit, onSubmit)
-        }
+        fun create(friendId: Long) = EntryFormViewModel(friendId)
     }
 }

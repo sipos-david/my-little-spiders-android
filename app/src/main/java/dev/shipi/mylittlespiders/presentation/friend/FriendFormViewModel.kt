@@ -80,8 +80,6 @@ class FriendFormViewModel : ViewModel() {
     }
 
     companion object {
-        fun create(): FriendFormViewModel {
-            return FriendFormViewModel()
-        }
+        fun create() = FriendFormViewModel()
     }
 }
