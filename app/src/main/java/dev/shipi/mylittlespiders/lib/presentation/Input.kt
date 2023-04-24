@@ -29,5 +29,5 @@ sealed class Input<T>(
         Input<Int>(initial, initial < min, { it < min })
 
     class RequiredDate(initial: Date? = null) :
-        Input<Date?>(initial, initial != null, { it != null })
+        Input<Date?>(initial, initial == null, { it == null })
 }
