@@ -29,6 +29,7 @@ fun DetailsScreen(
     val state by viewModel.state.collectAsState()
     Details(
         state = state,
+        onDeleteEntry = viewModel::onDeleteEntry,
         onNavigateToAddEntry = onNavigateToAddEntry,
         onNavigateToEditEntry = onNavigateToEditEntry
     )
@@ -37,6 +38,7 @@ fun DetailsScreen(
 @Composable
 fun Details(
     state: ViewState<FriendDetails>,
+    onDeleteEntry: (Long) -> Unit,
     onNavigateToAddEntry: () -> Unit,
     onNavigateToEditEntry: (Long) -> Unit
 ) {
@@ -60,7 +62,11 @@ fun Details(
                 }
                 Column {
                     state.data.entries.forEach {
-                        EntryRow(entry = it, onNavigateToEditEntry = onNavigateToEditEntry)
+                        EntryRow(
+                            entry = it,
+                            onDeleteEntry = onDeleteEntry,
+                            onNavigateToEditEntry = onNavigateToEditEntry
+                        )
                     }
                 }
             }
@@ -94,5 +100,5 @@ class DetailsStatePreviewProvider : PreviewParameterProvider<ViewState<FriendDet
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun DetailsPreview(@PreviewParameter(DetailsStatePreviewProvider::class) state: ViewState<FriendDetails>) {
-    Details(state = state, {}, {})
+    Details(state = state, {}, {}, {})
 }
