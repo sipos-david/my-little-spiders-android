@@ -77,6 +77,7 @@ class FriendsDatabaseMock : FriendsDatabase {
             if (idx > -1) {
                 val updatedEntries = it.entries.toMutableList()
                 updatedEntries.removeAt(idx)
+                update(FriendDetails(it.id, it.name, it.location, it.nightmares, updatedEntries))
                 return
             }
         }

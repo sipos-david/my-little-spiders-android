@@ -100,7 +100,9 @@ class FriendsApiMock : FriendsApi {
             val idx = it.entries.indexOfFirst { entry -> entry.id == entryId }
             if (idx > -1) {
                 val updatedEntries = it.entries.toMutableList()
-                return updatedEntries.removeAt(idx)
+                val removed = updatedEntries.removeAt(idx)
+                update(FriendDetails(it.id, it.name, it.location, it.nightmares, updatedEntries))
+                return removed
             }
         }
         return null
