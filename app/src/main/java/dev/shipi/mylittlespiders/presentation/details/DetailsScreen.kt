@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -15,7 +17,13 @@ import java.lang.Exception
 import java.util.Date
 
 @Composable
-fun DetailsScreen(state: ViewState<FriendDetails>) {
+fun DetailsScreen(viewModel: DetailsViewModel) {
+    val state by viewModel.state.collectAsState()
+    Details(state = state)
+}
+
+@Composable
+fun Details(state: ViewState<FriendDetails>) {
     when (state) {
         is ViewState.Loading -> CircularProgressIndicator()
         is ViewState.Error -> Text(text = "${state.e.message}")
@@ -27,6 +35,7 @@ fun DetailsScreen(state: ViewState<FriendDetails>) {
                 Text(text = state.data.id.toString())
                 Text(text = state.data.name)
                 Text(text = state.data.location)
+                Text(text = state.data.nightmares.toString())
                 Column {
                     state.data.entries.forEach {
                         EntryRow(entry = it)
@@ -62,6 +71,6 @@ class DetailsStatePreviewProvider : PreviewParameterProvider<ViewState<FriendDet
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun DetailsScreenPreview(@PreviewParameter(DetailsStatePreviewProvider::class) state: ViewState<FriendDetails>) {
-    DetailsScreen(state =  state)
+fun DetailsPreview(@PreviewParameter(DetailsStatePreviewProvider::class) state: ViewState<FriendDetails>) {
+    Details(state = state)
 }

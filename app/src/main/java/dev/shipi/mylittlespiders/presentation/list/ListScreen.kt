@@ -11,6 +11,8 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -21,10 +23,25 @@ import java.lang.Exception
 
 @Composable
 fun ListScreen(
+    viewModel: ListViewModel,
+    onNavigateToViewFriend: (Long) -> Unit,
+    onNavigateToAddFriend: () -> Unit,
+) {
+    val state by viewModel.state.collectAsState()
+    ListView(
+        state = state,
+        onListRefresh = viewModel::refreshList,
+        onNavigateToViewFriend = onNavigateToViewFriend,
+        onNavigateToAddFriend = onNavigateToAddFriend
+    )
+}
+
+@Composable
+fun ListView(
     state: ViewState<List<Friend>>,
     onListRefresh: () -> Unit,
-    onViewFriend: (Long) -> Unit,
-    onAddNewFriend: () -> Unit,
+    onNavigateToViewFriend: (Long) -> Unit,
+    onNavigateToAddFriend: () -> Unit,
 ) {
     when (state) {
         is ViewState.Loading -> CircularProgressIndicator()
@@ -36,7 +53,7 @@ fun ListScreen(
             Button(onClick = onListRefresh) {
                 Text(text = "Refresh from network")
             }
-            FloatingActionButton(onClick = onAddNewFriend) {
+            FloatingActionButton(onClick = onNavigateToAddFriend) {
                 Icon(
                     imageVector = Icons.Rounded.Add,
                     contentDescription = "Add new friend!",
@@ -44,7 +61,7 @@ fun ListScreen(
             }
             LazyColumn {
                 items(state.data) { friend ->
-                    FriendRow(friend, onViewFriend)
+                    FriendRow(friend, onNavigateToViewFriend)
                 }
             }
         }
@@ -70,6 +87,6 @@ class ListStatePreviewProvider : PreviewParameterProvider<ViewState<List<Friend>
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun ListScreenPreview(@PreviewParameter(ListStatePreviewProvider::class) state: ViewState<List<Friend>>) {
-    ListScreen(state = state, {}, {}, {})
+fun ListViewPreview(@PreviewParameter(ListStatePreviewProvider::class) state: ViewState<List<Friend>>) {
+    ListView(state = state, {}, {}, {})
 }
