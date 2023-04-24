@@ -25,6 +25,7 @@ import java.lang.Exception
 fun ListScreen(
     viewModel: ListViewModel,
     onNavigateToViewFriend: (Long) -> Unit,
+    onNavigateToUpdateFriend: (Long) -> Unit,
     onNavigateToAddFriend: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -32,6 +33,7 @@ fun ListScreen(
         state = state,
         onListRefresh = viewModel::refreshList,
         onNavigateToViewFriend = onNavigateToViewFriend,
+        onNavigateToUpdateFriend = onNavigateToUpdateFriend,
         onNavigateToAddFriend = onNavigateToAddFriend
     )
 }
@@ -41,6 +43,7 @@ fun ListView(
     state: ViewState<List<Friend>>,
     onListRefresh: () -> Unit,
     onNavigateToViewFriend: (Long) -> Unit,
+    onNavigateToUpdateFriend: (Long) -> Unit,
     onNavigateToAddFriend: () -> Unit,
 ) {
     when (state) {
@@ -61,7 +64,7 @@ fun ListView(
             }
             LazyColumn {
                 items(state.data) { friend ->
-                    FriendRow(friend, onNavigateToViewFriend)
+                    FriendRow(friend, onNavigateToViewFriend, onNavigateToUpdateFriend)
                 }
             }
         }
@@ -88,5 +91,5 @@ class ListStatePreviewProvider : PreviewParameterProvider<ViewState<List<Friend>
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun ListViewPreview(@PreviewParameter(ListStatePreviewProvider::class) state: ViewState<List<Friend>>) {
-    ListView(state = state, {}, {}, {})
+    ListView(state = state, {}, {}, {}, {})
 }

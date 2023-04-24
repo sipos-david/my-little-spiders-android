@@ -8,11 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class FriendFormViewModel(
-    title: String,
-    submit: String,
-    private val onSubmit: suspend (name: String, location: String, nightmares: Int) -> Unit
-) : ViewModel() {
+class FriendFormViewModel : ViewModel() {
 
     private val name = Input.RequiredString()
     private val location = Input.RequiredString()
@@ -21,14 +17,20 @@ class FriendFormViewModel(
     private val _state =
         MutableStateFlow(
             FriendFormState(
-                title,
-                submit,
                 name.input,
                 location.input,
                 nightmares.input
             )
         )
     val state = _state.asStateFlow()
+
+    fun setId(value: Long?) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(friendId = value)
+            }
+        }
+    }
 
     fun setName(value: String) {
         viewModelScope.launch {
@@ -57,29 +59,29 @@ class FriendFormViewModel(
         }
     }
 
-    fun onSubmit() {
+    fun hasErrors(): Boolean {
+        return name.input.hasError || location.input.hasError || nightmares.input.hasError
+    }
+
+    fun clear() {
         viewModelScope.launch {
-            if (hasErrors()) {
-                onSubmit(
-                    name.input.value,
-                    location.input.value,
-                    nightmares.input.value ?: 0
+            _state.update {
+                name.set("")
+                location.set("")
+                nightmares.set(null)
+                it.copy(
+                    hasErrors = hasErrors(),
+                    name = name.input,
+                    location = location.input,
+                    nightmares = nightmares.input
                 )
             }
         }
     }
 
-    private fun hasErrors(): Boolean {
-        return name.input.hasError || location.input.hasError || nightmares.input.hasError
-    }
-
     companion object {
-        fun create(
-            title: String,
-            submit: String,
-            onSubmit: suspend (name: String, location: String, nightmares: Int) -> Unit
-        ): FriendFormViewModel {
-            return FriendFormViewModel(title, submit, onSubmit)
+        fun create(): FriendFormViewModel {
+            return FriendFormViewModel()
         }
     }
 }

@@ -19,12 +19,15 @@ import dev.shipi.mylittlespiders.lib.createString
 
 @Composable
 fun FriendForm(
-    viewModel: FriendFormViewModel
+    viewModel: FriendFormViewModel,
+    title: String,
+    submit: String,
+    onSubmit: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
     Column {
-        Text(text = state.title)
+        Text(text = title)
         OutlinedTextField(
             value = state.name.value,
             singleLine = true,
@@ -50,8 +53,8 @@ fun FriendForm(
             isError = state.nightmares.hasError,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
         )
-        Button(onClick = viewModel::onSubmit, enabled = !state.hasErrors) {
-            Text(text = state.submit)
+        Button(onClick = onSubmit, enabled = !state.hasErrors) {
+            Text(text = submit)
         }
     }
 }
@@ -59,5 +62,5 @@ fun FriendForm(
 @Preview
 @Composable
 fun FriendFormPreview() {
-    FriendForm(FriendFormViewModel("Title", "Submit") { _, _, _ -> })
+    FriendForm(FriendFormViewModel(), "Title", "Submit") { }
 }

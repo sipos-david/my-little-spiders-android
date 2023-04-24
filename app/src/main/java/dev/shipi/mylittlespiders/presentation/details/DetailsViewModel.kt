@@ -21,12 +21,13 @@ class DetailsViewModel @Inject constructor(
     private val _state = MutableStateFlow<ViewState<FriendDetails>>(ViewState.Loading)
     val state = _state.asStateFlow()
 
-    fun getFriendDetails(friendId: String?) {
+    fun showFriendDetails(friendId: String?) {
         viewModelScope.launch {
             _state.update {
                 try {
                     val id =
-                        friendId?.toLong() ?: throw Exception("Friend id missing or invalid format!")
+                        friendId?.toLongOrNull()
+                            ?: throw Exception("Friend id missing or invalid format!")
                     val details =
                         getFriendDetails(id) ?: throw Exception("Friend with id:$id not found!")
                     ViewState.Data(details, checkNetworkState())

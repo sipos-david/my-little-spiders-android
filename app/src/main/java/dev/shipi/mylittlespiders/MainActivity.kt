@@ -17,6 +17,8 @@ import dev.shipi.mylittlespiders.presentation.details.DetailsViewModel
 
 import dev.shipi.mylittlespiders.presentation.friend.add.AddFriendScreen
 import dev.shipi.mylittlespiders.presentation.friend.add.AddFriendViewModel
+import dev.shipi.mylittlespiders.presentation.friend.update.UpdateFriendScreen
+import dev.shipi.mylittlespiders.presentation.friend.update.UpdateFriendViewModel
 import dev.shipi.mylittlespiders.presentation.list.ListScreen
 import dev.shipi.mylittlespiders.presentation.list.ListViewModel
 import dev.shipi.mylittlespiders.ui.theme.MyLittleSpidersTheme
@@ -26,6 +28,7 @@ class MainActivity : ComponentActivity() {
     private val listViewModel: ListViewModel by viewModels()
     private val addFriendViewModel: AddFriendViewModel by viewModels()
     private val detailsViewModel: DetailsViewModel by viewModels()
+    private val updateFriendViewModel: UpdateFriendViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,17 +47,34 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToViewFriend = {
                                     navController.navigate("details/$it")
                                 },
+                                onNavigateToUpdateFriend = {
+                                    navController.navigate("update-friend/$it")
+                                },
                                 onNavigateToAddFriend = {
                                     navController.navigate("add-friend")
                                 }
                             )
                         }
                         composable("details/{friendId}") { backStackEntry ->
-                            detailsViewModel.getFriendDetails(backStackEntry.arguments?.getString("friendId"))
+                            detailsViewModel.showFriendDetails(backStackEntry.arguments?.getString("friendId"))
                             DetailsScreen(detailsViewModel)
                         }
                         composable("add-friend") {
-                            AddFriendScreen(viewModel = addFriendViewModel)
+                            AddFriendScreen(viewModel = addFriendViewModel) {
+                                listViewModel.refreshList()
+                                navController.navigate("list")
+                            }
+                        }
+                        composable("update-friend/{friendId}") { backStackEntry ->
+                            updateFriendViewModel.showFriendDetails(
+                                backStackEntry.arguments?.getString(
+                                    "friendId"
+                                )
+                            )
+                            UpdateFriendScreen(viewModel = updateFriendViewModel) {
+                                listViewModel.refreshList()
+                                navController.navigate("list")
+                            }
                         }
                     }
                 }
