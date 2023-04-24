@@ -1,6 +1,6 @@
 package dev.shipi.mylittlespiders.lib.presentation
 
-import java.util.Date
+import java.time.LocalDate
 
 sealed class Input<T>(
     value: T,
@@ -28,6 +28,6 @@ sealed class Input<T>(
     class RequiredMinInt(private val min: Int = 0, initial: Int = 0) :
         Input<Int>(initial, initial < min, { it < min })
 
-    class RequiredDate(initial: Date? = null) :
-        Input<Date?>(initial, initial == null, { it == null })
+    class RequiredDate(initial: LocalDate? = null) :
+        Input<LocalDate?>(initial, initial == null, { it == null })
 }

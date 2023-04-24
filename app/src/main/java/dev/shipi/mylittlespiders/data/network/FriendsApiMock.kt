@@ -5,7 +5,7 @@ import dev.shipi.mylittlespiders.domain.model.Entry
 import dev.shipi.mylittlespiders.domain.model.FriendDetails
 import dev.shipi.mylittlespiders.domain.model.NewEntry
 import dev.shipi.mylittlespiders.domain.model.NewFriend
-import java.util.Date
+import java.time.LocalDate
 
 class FriendsApiMock : FriendsApi {
     private var id: Long = 4
@@ -15,15 +15,15 @@ class FriendsApiMock : FriendsApi {
         FriendDetails(1, "D'aand'mo Av'ugd", "cellar", 234, listOf()),
         FriendDetails(
             2, "Quentin Tarantula", "Movie room", 1, listOf(
-                Entry(0, Date(), "He suddenly appeared with a movie", 234),
-                Entry(1, Date(), "He made a website", 21),
+                Entry(0, LocalDate.now(), "He suddenly appeared with a movie", 234),
+                Entry(1, LocalDate.now(), "He made a website", 21),
                 Entry(
                     2,
-                    Date(),
+                    LocalDate.now(),
                     "I finally had the courage to ask him how do other spiders find a partner? He said they usually meet on the web!",
                     12
                 ),
-                Entry(3, Date(), "", 25),
+                Entry(3, LocalDate.now(), "", 25),
             )
         ),
         FriendDetails(3, "Peter Parker", "Guest room", 0, listOf())
