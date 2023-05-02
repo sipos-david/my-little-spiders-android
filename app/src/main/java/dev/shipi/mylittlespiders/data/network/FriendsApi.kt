@@ -7,12 +7,12 @@ import dev.shipi.mylittlespiders.domain.model.NewEntry
 import dev.shipi.mylittlespiders.domain.model.NewFriend
 
 interface FriendsApi {
-    fun getAllFriends(): List<FriendDetails>
-    fun getFriendDetails(id: Long): FriendDetails?
-    fun addFriend(new: NewFriend): FriendDetails
-    fun editFriend(edited: EditFriend): FriendDetails?
-    fun deleteFriend(id: Long): FriendDetails?
-    fun addEntry(friendId: Long, new: NewEntry): Entry?
-    fun editEntry(edited: Entry): Entry?
-    fun deleteEntry(friendId: Long, entryId: Long): Entry?
+    suspend fun getAllFriends(): List<FriendDetails>
+    suspend fun getFriendDetails(id: Long): FriendDetails?
+    suspend fun addFriend(new: NewFriend): FriendDetails
+    suspend fun editFriend(edited: EditFriend): FriendDetails?
+    suspend fun deleteFriend(id: Long): FriendDetails?
+    suspend fun addEntry(friendId: Long, new: NewEntry): Entry?
+    suspend fun editEntry(friendId: Long, edited: Entry): Entry?
+    suspend fun deleteEntry(friendId: Long, entryId: Long): Entry?
 }
