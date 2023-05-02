@@ -38,10 +38,10 @@ interface EntriesApi {
      *
      * @param roommateId Id of the roommate which contains the entry
      * @param entryId ID of entry to delete
-     * @return [Unit]
+     * @return [Entry]
      */
     @DELETE("roommate/{roommateId}/entries/{entryId}")
-    suspend fun deleteEntry(@Path("roommateId") roommateId: kotlin.Long, @Path("entryId") entryId: kotlin.Long): Response<Unit>
+    suspend fun deleteEntry(@Path("roommateId") roommateId: kotlin.Long, @Path("entryId") entryId: kotlin.Long): Response<Entry>
 
     /**
      * Updates an entry for a roommate
@@ -55,9 +55,9 @@ interface EntriesApi {
      * @param roommateId Id of the roommate which contains the entry
      * @param entryId ID of entry to change
      * @param entryForm  (optional)
-     * @return [Unit]
+     * @return [Entry]
      */
     @PUT("roommate/{roommateId}/entries/{entryId}")
-    suspend fun updateEntry(@Path("roommateId") roommateId: kotlin.Long, @Path("entryId") entryId: kotlin.Long, @Body entryForm: EntryForm? = null): Response<Unit>
+    suspend fun updateEntry(@Path("roommateId") roommateId: kotlin.Long, @Path("entryId") entryId: kotlin.Long, @Body entryForm: EntryForm? = null): Response<Entry>
 
 }
