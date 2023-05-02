@@ -29,23 +29,23 @@ class FriendsApiMock : FriendsApi {
         FriendDetails(3, "Peter Parker", "Guest room", 0, listOf())
     )
 
-    override fun getAllFriends(): List<FriendDetails> {
+    override suspend fun getAllFriends(): List<FriendDetails> {
         return friends
     }
 
-    override fun getFriendDetails(id: Long): FriendDetails? {
+    override suspend fun getFriendDetails(id: Long): FriendDetails? {
         return friends.firstOrNull {
             it.id == id
         }
     }
 
-    override fun addFriend(new: NewFriend): FriendDetails {
+    override suspend fun addFriend(new: NewFriend): FriendDetails {
         val friend = FriendDetails(id++, new.name, new.location, new.nightmares, emptyList())
         friends.add(friend)
         return friend
     }
 
-    override fun editFriend(edited: EditFriend): FriendDetails? {
+    override suspend fun editFriend(edited: EditFriend): FriendDetails? {
         val friend = getFriendDetails(edited.id) ?: return null
         val updated = FriendDetails(
             friend.id,
@@ -58,7 +58,7 @@ class FriendsApiMock : FriendsApi {
         return updated
     }
 
-    override fun deleteFriend(id: Long): FriendDetails? {
+    override suspend fun deleteFriend(id: Long): FriendDetails? {
         val idx = friends.indexOfFirst { it.id == id }
         if (idx < 0) {
             return null
@@ -66,7 +66,7 @@ class FriendsApiMock : FriendsApi {
         return friends.removeAt(idx)
     }
 
-    override fun addEntry(friendId: Long, new: NewEntry): Entry? {
+    override suspend fun addEntry(friendId: Long, new: NewEntry): Entry? {
         val friend = getFriendDetails(friendId) ?: return null
         val newEntry = Entry(id++, new.date, new.text, new.respect)
         val entries = friend.entries.toMutableList()
@@ -82,20 +82,27 @@ class FriendsApiMock : FriendsApi {
         return newEntry
     }
 
-    override fun editEntry(edited: Entry): Entry? {
-        friends.forEach {
-            val idx = it.entries.indexOfFirst { entry -> entry.id == edited.id }
-            if (idx > -1) {
-                val updatedEntries = it.entries.toMutableList()
-                updatedEntries.apply { this[idx] = edited }
-                update(FriendDetails(it.id, it.name, it.location, it.nightmares, updatedEntries))
-                return edited
-            }
+    override suspend fun editEntry(friendId: Long, edited: Entry): Entry? {
+        val friend = friends.firstOrNull { it.id == friendId } ?: return null
+        val idx = friend.entries.indexOfFirst { entry -> entry.id == edited.id }
+        if (idx < 0) {
+            return null
         }
-        return null
+        val updatedEntries = friend.entries.toMutableList()
+        updatedEntries.apply { this[idx] = edited }
+        update(
+            FriendDetails(
+                friend.id,
+                friend.name,
+                friend.location,
+                friend.nightmares,
+                updatedEntries
+            )
+        )
+        return edited
     }
 
-    override fun deleteEntry(friendId: Long, entryId: Long): Entry? {
+    override suspend fun deleteEntry(friendId: Long, entryId: Long): Entry? {
         friends.forEach {
             val idx = it.entries.indexOfFirst { entry -> entry.id == entryId }
             if (idx > -1) {

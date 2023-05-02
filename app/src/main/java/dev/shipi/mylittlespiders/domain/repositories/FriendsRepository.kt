@@ -16,6 +16,6 @@ interface FriendsRepository {
     suspend fun editFriend(edited: EditFriend)
     suspend fun deleteFriend(id: Long)
     suspend fun addEntry(friendId: Long, new: NewEntry)
-    suspend fun editEntry(edited: Entry)
+    suspend fun editEntry(friendId: Long, edited: Entry)
     suspend fun deleteEntry(friendId: Long, entryId: Long)
 }

@@ -63,8 +63,8 @@ class FriendsInteractor(
         }
     }
 
-    override suspend fun editEntry(edited: Entry) {
-        val updated = friendsApi.editEntry(edited)
+    override suspend fun editEntry(friendId: Long, edited: Entry) {
+        val updated = friendsApi.editEntry(friendId, edited)
         if (updated != null) {
             friendsDatabase.editEntry(updated)
         }

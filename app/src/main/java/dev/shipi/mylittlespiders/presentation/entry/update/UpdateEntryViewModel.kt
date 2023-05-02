@@ -79,6 +79,7 @@ class UpdateEntryViewModel @Inject constructor(
                 )
             }?.let {
                 updateEntry(
+                    data.friendId,
                     it
                 )
             }
