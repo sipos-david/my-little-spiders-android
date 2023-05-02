@@ -12,6 +12,7 @@ fun main() {
 
 fun Application.module() {
     configureSwagger()
+    configureAuthorization(listOf("/swagger", "/swagger/documentation.yaml"))
     configureSerialization()
     configureRouting()
 }
