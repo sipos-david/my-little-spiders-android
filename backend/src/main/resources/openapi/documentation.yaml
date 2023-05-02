@@ -117,6 +117,10 @@ paths:
       responses:
         '200':
           description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roommate'
         '400':
           description: Invalid roommateId supplied or invalid form
         '401':
@@ -142,6 +146,10 @@ paths:
       responses:
         '200':
           description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roommate'
         '400':
           description: Invalid roommateId supplied
         '401':
@@ -215,6 +223,10 @@ paths:
       responses:
         '200':
           description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
         '400':
           description: Invalid roommateId or entryId supplied
         '401':
@@ -247,6 +259,10 @@ paths:
       responses:
         '200':
           description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
         '400':
           description: Invalid roommateId or entryId supplied
         '401':
