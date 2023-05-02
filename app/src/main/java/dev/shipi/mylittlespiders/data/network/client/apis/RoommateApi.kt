@@ -35,10 +35,10 @@ interface RoommateApi {
      *  - 404: Roommate not found
      *
      * @param roommateId Roommate id to delete
-     * @return [Unit]
+     * @return [Roommate]
      */
     @DELETE("roommate/{roommateId}")
-    suspend fun deleteRoommate(@Path("roommateId") roommateId: kotlin.Long): Response<Unit>
+    suspend fun deleteRoommate(@Path("roommateId") roommateId: kotlin.Long): Response<Roommate>
 
     /**
      * Find all roommates
@@ -78,9 +78,9 @@ interface RoommateApi {
      *
      * @param roommateId ID of roommate that needs to be updated
      * @param roommateForm Roommate edited data
-     * @return [Unit]
+     * @return [Roommate]
      */
     @PUT("roommate/{roommateId}")
-    suspend fun updateRoommate(@Path("roommateId") roommateId: kotlin.Long, @Body roommateForm: RoommateForm): Response<Unit>
+    suspend fun updateRoommate(@Path("roommateId") roommateId: kotlin.Long, @Body roommateForm: RoommateForm): Response<Roommate>
 
 }
