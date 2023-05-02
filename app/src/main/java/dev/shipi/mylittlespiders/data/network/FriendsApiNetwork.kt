@@ -44,7 +44,7 @@ class FriendsApiNetwork(
         if (!res.isSuccessful) {
             throw RuntimeException("${res.code()}: ${res.message()}")
         }
-        return null
+        return res.body()?.toModel()
     }
 
     override suspend fun deleteFriend(id: Long): FriendDetails? {
@@ -52,7 +52,7 @@ class FriendsApiNetwork(
         if (!res.isSuccessful) {
             throw RuntimeException("${res.code()}: ${res.message()}")
         }
-        return null
+        return res.body()?.toModel()
     }
 
     override suspend fun addEntry(friendId: Long, new: NewEntry): Entry? {
@@ -68,7 +68,7 @@ class FriendsApiNetwork(
         if (!res.isSuccessful) {
             throw RuntimeException("${res.code()}: ${res.message()}")
         }
-        return null
+        return res.body()?.toModel()
     }
 
     override suspend fun deleteEntry(friendId: Long, entryId: Long): Entry? {
@@ -76,7 +76,7 @@ class FriendsApiNetwork(
         if (!res.isSuccessful) {
             throw RuntimeException("${res.code()}: ${res.message()}")
         }
-        return null
+        return res.body()?.toModel()
     }
 }
 
