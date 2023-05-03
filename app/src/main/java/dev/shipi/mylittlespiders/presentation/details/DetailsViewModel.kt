@@ -50,13 +50,19 @@ class DetailsViewModel @Inject constructor(
             val details = (_state.value as ViewState.Data<FriendDetails>).data
 
             _state.update { ViewState.Loading }
-            deleteEntry(details.id, entryId)
+            try {
+                deleteEntry(details.id, entryId)
 
-            _state.update {
-                val updated = refreshFriendDetails(details.id) ?: return@update ViewState.Error(
-                    Exception("Cannot delete entry")
-                )
-                ViewState.Data(updated, checkNetworkState())
+                _state.update {
+                    val updated = refreshFriendDetails(details.id) ?: return@update ViewState.Error(
+                        Exception("Cannot delete entry")
+                    )
+                    ViewState.Data(updated, checkNetworkState())
+                }
+            } catch (e: Exception) {
+                _state.update {
+                    ViewState.Error(e)
+                }
             }
         }
     }
