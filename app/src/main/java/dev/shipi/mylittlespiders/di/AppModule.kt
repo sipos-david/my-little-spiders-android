@@ -1,12 +1,18 @@
 package dev.shipi.mylittlespiders.di
 
+import android.content.Context
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.shipi.mylittlespiders.data.FriendsInteractor
 import dev.shipi.mylittlespiders.data.local.FriendsDatabase
-import dev.shipi.mylittlespiders.data.local.FriendsDatabaseMock
+import dev.shipi.mylittlespiders.data.local.FriendsDatabaseLocal
+import dev.shipi.mylittlespiders.data.local.dao.EntryDao
+import dev.shipi.mylittlespiders.data.local.dao.RoommateDao
+import dev.shipi.mylittlespiders.data.local.db.AppDatabase
 import dev.shipi.mylittlespiders.data.network.FriendsApi
 import dev.shipi.mylittlespiders.data.network.FriendsApiNetwork
 import dev.shipi.mylittlespiders.data.network.client.apis.EntriesApi
@@ -30,10 +36,25 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
     //  Create persistence layer
+    @Provides
+    @Singleton
+    fun provideRoomDatabase(@ApplicationContext appContext: Context) = Room.databaseBuilder(
+        appContext,
+        AppDatabase::class.java, "friends-database"
+    ).build()
 
     @Provides
     @Singleton
-    fun provideDatabase(): FriendsDatabase = FriendsDatabaseMock()
+    fun provideRoommateDao(appDatabase: AppDatabase) = appDatabase.roommateDao()
+
+    @Provides
+    @Singleton
+    fun provideEntryDao(appDatabase: AppDatabase) = appDatabase.entryDao()
+
+    @Provides
+    @Singleton
+    fun provideDatabase(roommateDao: RoommateDao, entryDao: EntryDao): FriendsDatabase =
+        FriendsDatabaseLocal(roommateDao, entryDao)
 
     // Create network layer
 
