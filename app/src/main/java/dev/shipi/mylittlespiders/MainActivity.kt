@@ -85,6 +85,9 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onNavigateToEditEntry = {
                                             navController.navigate("/update/$it")
+                                        },
+                                        onNavigateBack = {
+                                            navController.navigate("list")
                                         }
                                     )
                                 }

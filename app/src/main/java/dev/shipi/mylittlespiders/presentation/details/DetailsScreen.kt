@@ -1,11 +1,24 @@
 package dev.shipi.mylittlespiders.presentation.details
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Face
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
 import dev.shipi.mylittlespiders.components.ErrorScreen
 import dev.shipi.mylittlespiders.components.LoadingScreen
 import dev.shipi.mylittlespiders.components.NetworkNotAvailableWidget
@@ -30,43 +44,123 @@ import java.time.LocalDate
 fun DetailsScreen(
     viewModel: DetailsViewModel,
     onNavigateToAddEntry: () -> Unit,
-    onNavigateToEditEntry: (Long) -> Unit
+    onNavigateToEditEntry: (Long) -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     Details(
         state = state,
         onDeleteEntry = viewModel::onDeleteEntry,
         onNavigateToAddEntry = onNavigateToAddEntry,
-        onNavigateToEditEntry = onNavigateToEditEntry
+        onNavigateToEditEntry = onNavigateToEditEntry,
+        onNavigateBack = onNavigateBack
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Details(
     state: ViewState<FriendDetails>,
     onDeleteEntry: (Long) -> Unit,
     onNavigateToAddEntry: () -> Unit,
-    onNavigateToEditEntry: (Long) -> Unit
+    onNavigateToEditEntry: (Long) -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     when (state) {
         is ViewState.Loading -> LoadingScreen()
         is ViewState.Error -> ErrorScreen(state.e.message)
-        is ViewState.Data -> Column {
-            if (!state.isNetworkAvailable) {
-                NetworkNotAvailableWidget()
-            }
-            Column {
-                Text(text = state.data.id.toString())
-                Text(text = state.data.name)
-                Text(text = state.data.location)
-                Text(text = state.data.nightmares.toString())
-                FloatingActionButton(onClick = onNavigateToAddEntry) {
+        is ViewState.Data -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                FloatingActionButton(
+                    modifier = Modifier.padding(bottom = 16.dp, end = 16.dp),
+                    onClick = onNavigateToAddEntry
+                ) {
                     Icon(
                         imageVector = Icons.Rounded.Add,
                         contentDescription = "Add new entry!",
                     )
                 }
-                Column {
+            }
+            Column {
+                LargeTopAppBar(
+                    title = {
+                        Column {
+                            Text(text = "Roommate", style = MaterialTheme.typography.titleMedium)
+                            Text(text = state.data.name)
+                        }
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.onBackground,
+                                imageVector = Icons.Outlined.ArrowBack,
+                                contentDescription = "Navigate back"
+                            )
+                        }
+                    }
+                )
+                if (!state.isNetworkAvailable) {
+                    NetworkNotAvailableWidget()
+                }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .width(48.dp)
+                                .height(48.dp)
+                                .padding(end = 8.dp),
+                            tint = MaterialTheme.colorScheme.primary,
+                            imageVector = Icons.Outlined.LocationOn,
+                            contentDescription = "Location icon"
+                        )
+                        Column {
+                            Text(text = "Location", style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                text = state.data.location,
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                        }
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .width(48.dp)
+                                .height(48.dp)
+                                .padding(end = 8.dp),
+                            tint = MaterialTheme.colorScheme.primary,
+                            imageVector = Icons.Outlined.Face,
+                            contentDescription = "Happy image"
+                        )
+                        Column {
+                            Text(
+                                text = "Nightmares",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = state.data.nightmares.toString(),
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                        }
+                    }
+                }
+                Text(
+                    text = "Entries",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 16.dp)
+                )
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     if (state.data.entries.isEmpty()) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -123,5 +217,5 @@ class DetailsStatePreviewProvider : PreviewParameterProvider<ViewState<FriendDet
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun DetailsPreview(@PreviewParameter(DetailsStatePreviewProvider::class) state: ViewState<FriendDetails>) {
-    Details(state = state, {}, {}, {})
+    Details(state = state, {}, {}, {}, {})
 }
