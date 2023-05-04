@@ -13,14 +13,18 @@ import dev.shipi.mylittlespiders.presentation.entry.EntryFormViewModel
 @Composable
 fun UpdateEntryScreen(viewModel: UpdateEntryViewModel, onNavigateToFriend: () -> Unit) {
     val state by viewModel.state.collectAsState()
-    UpdateEntryView(state) {
+    UpdateEntryView(state, {
         viewModel.updateEntry()
         onNavigateToFriend()
-    }
+    }, onNavigateToFriend)
 }
 
 @Composable
-fun UpdateEntryView(state: ViewState<EntryFormViewModel>, onSubmit: () -> Unit) {
+fun UpdateEntryView(
+    state: ViewState<EntryFormViewModel>,
+    onSubmit: () -> Unit,
+    onNavigateBack: () -> Unit
+) {
     when (state) {
         is ViewState.Data -> {
             if (!state.isNetworkAvailable) {
@@ -30,7 +34,8 @@ fun UpdateEntryView(state: ViewState<EntryFormViewModel>, onSubmit: () -> Unit) 
                 state.data,
                 "Edit entry",
                 "Ok",
-                onSubmit
+                onSubmit,
+                onNavigateBack
             )
         }
 
