@@ -1,11 +1,11 @@
 package dev.shipi.mylittlespiders.presentation.friend.update
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import dev.shipi.mylittlespiders.components.ErrorScreen
 import dev.shipi.mylittlespiders.components.LoadingScreen
+import dev.shipi.mylittlespiders.components.NetworkNotAvailableWidget
 import dev.shipi.mylittlespiders.lib.presentation.ViewState
 import dev.shipi.mylittlespiders.presentation.friend.FriendForm
 import dev.shipi.mylittlespiders.presentation.friend.FriendFormViewModel
@@ -38,7 +38,7 @@ fun UpdateFriendView(
     when (state) {
         is ViewState.Data -> {
             if (!state.isNetworkAvailable) {
-                return Text(text = "Network unavailable!")
+                return NetworkNotAvailableWidget()
             }
             FriendForm(
                 state.data,

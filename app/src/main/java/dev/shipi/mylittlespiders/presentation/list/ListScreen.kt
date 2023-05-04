@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import dev.shipi.mylittlespiders.components.ErrorScreen
 import dev.shipi.mylittlespiders.components.LoadingScreen
+import dev.shipi.mylittlespiders.components.NetworkNotAvailableWidget
 import dev.shipi.mylittlespiders.domain.model.Friend
 import dev.shipi.mylittlespiders.lib.presentation.ViewState
 import dev.shipi.mylittlespiders.presentation.list.view.FriendRow
@@ -96,7 +97,7 @@ fun ListView(
                     }
                 )
                 if (!state.isNetworkAvailable) {
-                    Text(text = "Network is unavailable!")
+                    NetworkNotAvailableWidget()
                 }
                 LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)) {
                     items(state.data) { friend ->
