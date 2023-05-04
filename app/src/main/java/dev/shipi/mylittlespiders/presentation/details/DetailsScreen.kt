@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import dev.shipi.mylittlespiders.components.ErrorScreen
 import dev.shipi.mylittlespiders.components.LoadingScreen
 import dev.shipi.mylittlespiders.domain.model.Entry
 import dev.shipi.mylittlespiders.domain.model.FriendDetails
@@ -44,7 +45,7 @@ fun Details(
 ) {
     when (state) {
         is ViewState.Loading -> LoadingScreen()
-        is ViewState.Error -> Text(text = "${state.e.message}")
+        is ViewState.Error -> ErrorScreen(state.e.message)
         is ViewState.Data -> Column {
             if (!state.isNetworkAvailable) {
                 Text(text = "Network is unavailable!")

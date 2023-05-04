@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import dev.shipi.mylittlespiders.components.ErrorScreen
 import dev.shipi.mylittlespiders.components.LoadingScreen
 import dev.shipi.mylittlespiders.domain.model.Friend
 import dev.shipi.mylittlespiders.lib.presentation.ViewState
@@ -61,7 +62,7 @@ fun ListView(
 ) {
     when (state) {
         is ViewState.Loading -> LoadingScreen()
-        is ViewState.Error -> Text(text = "${state.e.message}")
+        is ViewState.Error -> ErrorScreen(state.e.message)
         is ViewState.Data -> {
             Box(
                 modifier = Modifier.fillMaxSize(),

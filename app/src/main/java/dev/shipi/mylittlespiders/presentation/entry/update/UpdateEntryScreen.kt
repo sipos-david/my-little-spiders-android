@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import dev.shipi.mylittlespiders.components.ErrorScreen
 import dev.shipi.mylittlespiders.components.LoadingScreen
 import dev.shipi.mylittlespiders.lib.presentation.ViewState
 import dev.shipi.mylittlespiders.presentation.entry.EntryForm
@@ -33,7 +34,7 @@ fun UpdateEntryView(state: ViewState<EntryFormViewModel>, onSubmit: () -> Unit) 
             )
         }
 
-        is ViewState.Error -> Text(text = state.e.message.toString())
+        is ViewState.Error -> ErrorScreen(state.e.message)
         ViewState.Loading -> LoadingScreen()
     }
 }
