@@ -10,16 +10,30 @@ import dev.shipi.mylittlespiders.presentation.friend.FriendForm
 import dev.shipi.mylittlespiders.presentation.friend.FriendFormViewModel
 
 @Composable
-fun UpdateFriendScreen(viewModel: UpdateFriendViewModel, navigateToFriendDetails: () -> Unit) {
+fun UpdateFriendScreen(
+    viewModel: UpdateFriendViewModel,
+    navigateToFriendDetails: (Long?) -> Unit,
+    onNavigateBack: () -> Unit
+) {
     val state by viewModel.state.collectAsState()
-    UpdateFriendView(state = state) {
+    UpdateFriendView(state = state, {
         viewModel.updateFriend()
-        navigateToFriendDetails()
-    }
+        if (state is ViewState.Data) {
+            navigateToFriendDetails(
+                (state as ViewState.Data<FriendFormViewModel>).data.state.value.friendId
+            )
+        } else {
+            onNavigateBack()
+        }
+    }, onNavigateBack)
 }
 
 @Composable
-fun UpdateFriendView(state: ViewState<FriendFormViewModel>, onSubmit: () -> Unit) {
+fun UpdateFriendView(
+    state: ViewState<FriendFormViewModel>,
+    onSubmit: () -> Unit,
+    onNavigateBack: () -> Unit
+) {
     when (state) {
         is ViewState.Data -> {
             if (!state.isNetworkAvailable) {
@@ -29,7 +43,8 @@ fun UpdateFriendView(state: ViewState<FriendFormViewModel>, onSubmit: () -> Unit
                 state.data,
                 "Edit roommate",
                 "Ok",
-                onSubmit
+                onSubmit,
+                onNavigateBack
             )
         }
 

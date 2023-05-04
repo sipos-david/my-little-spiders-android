@@ -5,8 +5,14 @@ import dev.shipi.mylittlespiders.presentation.friend.FriendForm
 
 @Composable
 fun AddFriendScreen(viewModel: AddFriendViewModel, onNavigateToListView: () -> Unit) {
-    FriendForm(viewModel.formViewModel, "Add friend", "Let's become friends!") {
-        viewModel.addFriend()
-        onNavigateToListView()
-    }
+    FriendForm(
+        viewModel = viewModel.formViewModel,
+        title = "Add friend",
+        submit = "Let's become friends!",
+        onSubmit = {
+            viewModel.addFriend()
+            onNavigateToListView()
+        },
+        onNavigateBack = onNavigateToListView
+    )
 }
