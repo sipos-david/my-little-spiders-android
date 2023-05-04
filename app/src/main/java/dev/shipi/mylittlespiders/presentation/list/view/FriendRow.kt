@@ -72,7 +72,7 @@ fun FriendRow(
                     contentColor = MaterialTheme.colorScheme.error
                 ),
                 onClick = { onDeleteFriend(friend.id) }) {
-                Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Edit friend")
+                Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Delete friend")
             }
         }
         Divider()
