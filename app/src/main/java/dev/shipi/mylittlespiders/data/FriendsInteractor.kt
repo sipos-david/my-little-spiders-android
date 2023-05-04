@@ -9,20 +9,28 @@ import dev.shipi.mylittlespiders.domain.model.FriendDetails
 import dev.shipi.mylittlespiders.domain.model.NewEntry
 import dev.shipi.mylittlespiders.domain.model.NewFriend
 import dev.shipi.mylittlespiders.domain.repositories.FriendsRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
 
 class FriendsInteractor(
     private val friendsApi: FriendsApi,
-    private val friendsDatabase: FriendsDatabase
+    private val friendsDatabase: FriendsDatabase,
 ) : FriendsRepository {
 
-    override suspend fun getFriends(): List<Friend> {
-        return friendsDatabase.getAllFriends().map { Friend(it.id, it.name, it.location) }
+    private val _friends = MutableStateFlow<List<Friend>>(emptyList())
+    override val friends: Flow<List<Friend>> = _friends
+
+    init {
+        runBlocking {
+            emitList()
+        }
     }
 
-    override suspend fun refreshFriends(): List<Friend> {
+    override suspend fun refreshFriends() {
         val network = friendsApi.getAllFriends()
         friendsDatabase.refreshAllFriends(network)
-        return network.map { Friend(it.id, it.name, it.location) }
+        _friends.emit(network.map { Friend(it.id, it.name, it.location) })
     }
 
     override suspend fun getFriendDetails(id: Long): FriendDetails? {
@@ -33,6 +41,7 @@ class FriendsInteractor(
         val network = friendsApi.getFriendDetails(id)
         if (network != null) {
             friendsDatabase.refreshFriend(network)
+            emitList()
         }
         return network
     }
@@ -40,12 +49,14 @@ class FriendsInteractor(
     override suspend fun addFriend(new: NewFriend) {
         val added = friendsApi.addFriend(new)
         friendsDatabase.addFriend(added)
+        emitList()
     }
 
     override suspend fun editFriend(edited: EditFriend) {
         val updated = friendsApi.editFriend(edited)
         if (updated != null) {
             friendsDatabase.editFriend(updated)
+            emitList()
         }
     }
 
@@ -53,6 +64,7 @@ class FriendsInteractor(
         val deleted = friendsApi.deleteFriend(id)
         if (deleted != null) {
             friendsDatabase.deleteFriend(deleted)
+            emitList()
         }
     }
 
@@ -60,6 +72,7 @@ class FriendsInteractor(
         val added = friendsApi.addEntry(friendId, new)
         if (added != null) {
             friendsDatabase.addEntry(friendId, added)
+            emitList()
         }
     }
 
@@ -67,6 +80,7 @@ class FriendsInteractor(
         val updated = friendsApi.editEntry(friendId, edited)
         if (updated != null) {
             friendsDatabase.editEntry(updated)
+            emitList()
         }
     }
 
@@ -74,6 +88,12 @@ class FriendsInteractor(
         val deleted = friendsApi.deleteEntry(friendId, entryId)
         if (deleted != null) {
             friendsDatabase.deleteEntry(deleted)
+            emitList()
         }
+    }
+
+    private suspend fun emitList() {
+        _friends.emit(
+            friendsDatabase.getAllFriends().map { Friend(it.id, it.name, it.location) })
     }
 }

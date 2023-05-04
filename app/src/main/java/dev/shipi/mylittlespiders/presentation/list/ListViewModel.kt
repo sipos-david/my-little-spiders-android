@@ -28,38 +28,21 @@ class ListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            refreshFriendList()
-            getData()
+            getFriendList().collect { list ->
+                _state.update { ViewState.Data(list, checkNetworkState()) }
+            }
         }
     }
 
     fun refreshList() {
         viewModelScope.launch {
-            refresh()
+            refreshFriendList()
         }
     }
-
 
     fun onDeleteFriend(friendId: Long) {
         viewModelScope.launch {
             deleteFriend(friendId)
-            refresh()
-        }
-    }
-
-    private suspend fun refresh() {
-        _state.update { ViewState.Loading }
-        refreshFriendList()
-        getData()
-    }
-
-    private suspend fun getData() {
-        _state.update {
-            try {
-                ViewState.Data(getFriendList(), checkNetworkState())
-            } catch (e: Exception) {
-                ViewState.Error(e)
-            }
         }
     }
 }

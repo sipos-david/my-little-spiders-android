@@ -106,7 +106,6 @@ class MainActivity : ComponentActivity() {
 
                         composable("add-friend") {
                             AddFriendScreen(viewModel = addFriendViewModel) {
-                                listViewModel.refreshList()
                                 navController.navigate("list")
                             }
                         }
@@ -117,7 +116,6 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                             UpdateFriendScreen(viewModel = updateFriendViewModel) {
-                                listViewModel.refreshList()
                                 navController.navigate("list")
                             }
                         }
