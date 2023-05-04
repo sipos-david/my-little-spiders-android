@@ -121,9 +121,9 @@ class MainActivity : ComponentActivity() {
                                         "friendId"
                                     )
                                 )
-                                UpdateFriendScreen(viewModel = updateFriendViewModel) {
-                                    navController.navigate("list")
-                                }
+                                UpdateFriendScreen(viewModel = updateFriendViewModel, {
+                                    navController.navigate("details/$it")
+                                }, { navController.navigate("list") })
                             }
                         }
                     }
