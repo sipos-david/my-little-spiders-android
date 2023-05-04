@@ -72,7 +72,7 @@ fun EntryForm(
     }
 }
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun EntryFormPreview() {
     EntryForm(EntryFormViewModel(0), "Title", "Submit") { }

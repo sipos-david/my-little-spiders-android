@@ -97,7 +97,7 @@ fun FriendForm(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun FriendFormPreview() {
     FriendForm(FriendFormViewModel(), "Title", "Submit", { }, { })
