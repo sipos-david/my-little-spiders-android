@@ -1,10 +1,10 @@
 package dev.shipi.mylittlespiders.presentation.friend.update
 
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import dev.shipi.mylittlespiders.components.LoadingScreen
 import dev.shipi.mylittlespiders.lib.presentation.ViewState
 import dev.shipi.mylittlespiders.presentation.friend.FriendForm
 import dev.shipi.mylittlespiders.presentation.friend.FriendFormViewModel
@@ -49,6 +49,6 @@ fun UpdateFriendView(
         }
 
         is ViewState.Error -> Text(text = state.e.message.toString())
-        ViewState.Loading -> CircularProgressIndicator()
+        ViewState.Loading -> LoadingScreen()
     }
 }

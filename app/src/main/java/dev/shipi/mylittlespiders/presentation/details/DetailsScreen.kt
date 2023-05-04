@@ -3,7 +3,6 @@ package dev.shipi.mylittlespiders.presentation.details
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -13,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import dev.shipi.mylittlespiders.components.LoadingScreen
 import dev.shipi.mylittlespiders.domain.model.Entry
 import dev.shipi.mylittlespiders.domain.model.FriendDetails
 import dev.shipi.mylittlespiders.lib.presentation.ViewState
@@ -43,7 +43,7 @@ fun Details(
     onNavigateToEditEntry: (Long) -> Unit
 ) {
     when (state) {
-        is ViewState.Loading -> CircularProgressIndicator()
+        is ViewState.Loading -> LoadingScreen()
         is ViewState.Error -> Text(text = "${state.e.message}")
         is ViewState.Data -> Column {
             if (!state.isNetworkAvailable) {
