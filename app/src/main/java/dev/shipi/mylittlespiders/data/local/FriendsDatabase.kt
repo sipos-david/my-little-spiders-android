@@ -4,12 +4,14 @@ import dev.shipi.mylittlespiders.domain.model.Entry
 import dev.shipi.mylittlespiders.domain.model.FriendDetails
 
 interface FriendsDatabase {
-    fun getAllFriends(): List<FriendDetails>
-    fun getFriendDetails(id: Long): FriendDetails?
-    fun save(friend: FriendDetails)
-    fun saveAll(friends: List<FriendDetails>)
-    fun deleteFriend(deleted: FriendDetails)
-    fun addEntry(friendId: Long, added: Entry)
-    fun editEntry(updated: Entry)
-    fun deleteEntry(deleted: Entry)
+    suspend fun getAllFriends(): List<FriendDetails>
+    suspend fun getFriendDetails(id: Long): FriendDetails?
+    suspend fun addFriend(friend: FriendDetails)
+    suspend fun editFriend(friend: FriendDetails)
+    suspend fun refreshFriend(friend: FriendDetails)
+    suspend fun refreshAllFriends(friends: List<FriendDetails>)
+    suspend fun deleteFriend(deleted: FriendDetails)
+    suspend fun addEntry(friendId: Long, added: Entry)
+    suspend fun editEntry(updated: Entry)
+    suspend fun deleteEntry(deleted: Entry)
 }

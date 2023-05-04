@@ -1,14 +1,24 @@
 package dev.shipi.mylittlespiders.di
 
+import android.content.Context
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.shipi.mylittlespiders.data.FriendsInteractor
 import dev.shipi.mylittlespiders.data.local.FriendsDatabase
-import dev.shipi.mylittlespiders.data.local.FriendsDatabaseMock
+import dev.shipi.mylittlespiders.data.local.FriendsDatabaseLocal
+import dev.shipi.mylittlespiders.data.local.dao.EntryDao
+import dev.shipi.mylittlespiders.data.local.dao.RoommateDao
+import dev.shipi.mylittlespiders.data.local.db.AppDatabase
 import dev.shipi.mylittlespiders.data.network.FriendsApi
-import dev.shipi.mylittlespiders.data.network.FriendsApiMock
+import dev.shipi.mylittlespiders.data.network.FriendsApiNetwork
+import dev.shipi.mylittlespiders.data.network.client.apis.EntriesApi
+import dev.shipi.mylittlespiders.data.network.client.apis.RoommateApi
+import dev.shipi.mylittlespiders.data.network.client.auth.ApiKeyAuth
+import dev.shipi.mylittlespiders.data.network.client.infrastructure.ApiClient
 import dev.shipi.mylittlespiders.domain.usecase.AddEntry
 import dev.shipi.mylittlespiders.domain.usecase.AddFriend
 import dev.shipi.mylittlespiders.domain.usecase.CheckNetworkState
@@ -25,15 +35,55 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    // Create data layer
+    //  Create persistence layer
+    @Provides
+    @Singleton
+    fun provideRoomDatabase(@ApplicationContext appContext: Context) = Room.databaseBuilder(
+        appContext,
+        AppDatabase::class.java, "friends-database"
+    ).build()
 
     @Provides
     @Singleton
-    fun provideDatabase(): FriendsDatabase = FriendsDatabaseMock()
+    fun provideRoommateDao(appDatabase: AppDatabase) = appDatabase.roommateDao()
 
     @Provides
     @Singleton
-    fun provideApi(): FriendsApi = FriendsApiMock()
+    fun provideEntryDao(appDatabase: AppDatabase) = appDatabase.entryDao()
+
+    @Provides
+    @Singleton
+    fun provideDatabase(roommateDao: RoommateDao, entryDao: EntryDao): FriendsDatabase =
+        FriendsDatabaseLocal(roommateDao, entryDao)
+
+    // Create network layer
+
+    @Provides
+    @Singleton
+    fun provideApiClient(): ApiClient {
+        // Android emulator's IP address to host's localhost
+        val apiClient = ApiClient(baseUrl = "http://10.0.2.2:8080")
+        apiClient.addAuthorization(
+            "apiKey",
+            ApiKeyAuth("header", "Api-Key", "123456")
+        )
+        return apiClient
+    }
+
+    @Provides
+    @Singleton
+    fun provideRoommateApi(apiClient: ApiClient) = apiClient.createService(RoommateApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideEntryApi(apiClient: ApiClient) = apiClient.createService(EntriesApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideApi(roommateApi: RoommateApi, entriesApi: EntriesApi): FriendsApi =
+        FriendsApiNetwork(roommateApi, entriesApi)
+
+    //  Create data layer
 
     @Provides
     @Singleton
@@ -48,7 +98,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGetFriendList(interactor: FriendsInteractor) = GetFriendList(interactor)
-
 
     @Provides
     @Singleton

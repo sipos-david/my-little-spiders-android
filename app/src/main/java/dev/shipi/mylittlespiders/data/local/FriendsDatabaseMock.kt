@@ -6,21 +6,21 @@ import dev.shipi.mylittlespiders.domain.model.FriendDetails
 class FriendsDatabaseMock : FriendsDatabase {
     private val friends = mutableListOf<FriendDetails>()
 
-    override fun getAllFriends(): List<FriendDetails> {
+    override suspend fun getAllFriends(): List<FriendDetails> {
         return friends
     }
 
-    override fun getFriendDetails(id: Long): FriendDetails? {
+    override suspend fun getFriendDetails(id: Long): FriendDetails? {
         return friends.firstOrNull {
             it.id == id
         }
     }
 
-    override fun save(friend: FriendDetails) {
-        update(friend)
+    override suspend fun addFriend(friend: FriendDetails) {
+        friends.add(friend)
     }
 
-    override fun saveAll(friends: List<FriendDetails>) {
+    override suspend fun refreshAllFriends(friends: List<FriendDetails>) {
         val new = friends.toMutableList()
         this.friends.forEach {
             if (new.isEmpty()) {
@@ -31,13 +31,13 @@ class FriendsDatabaseMock : FriendsDatabase {
                 new.add(it)
             } else {
                 new.removeAt(new.indexOf(friend))
-                update(friend)
+                editFriend(friend)
             }
         }
         this.friends.addAll(new)
     }
 
-    override fun deleteFriend(deleted: FriendDetails) {
+    override suspend fun deleteFriend(deleted: FriendDetails) {
         val idx = friends.indexOfFirst { it.id == deleted.id }
         if (idx < 0) {
             return
@@ -45,7 +45,7 @@ class FriendsDatabaseMock : FriendsDatabase {
         friends.removeAt(idx)
     }
 
-    override fun addEntry(friendId: Long, added: Entry) {
+    override suspend fun addEntry(friendId: Long, added: Entry) {
         val friend = getFriendDetails(friendId) ?: return
         val entries = friend.entries.toMutableList()
         entries.add(added)
@@ -56,39 +56,63 @@ class FriendsDatabaseMock : FriendsDatabase {
             friend.nightmares,
             entries
         )
-        update(updated)
+        editFriend(updated)
     }
 
-    override fun editEntry(updated: Entry) {
+    override suspend fun editEntry(updated: Entry) {
         friends.forEach {
             val idx = it.entries.indexOfFirst { entry -> entry.id == updated.id }
             if (idx > -1) {
                 val updatedEntries = it.entries.toMutableList()
                 updatedEntries.apply { this[idx] = updated }
-                update(FriendDetails(it.id, it.name, it.location, it.nightmares, updatedEntries))
+                editFriend(
+                    FriendDetails(
+                        it.id,
+                        it.name,
+                        it.location,
+                        it.nightmares,
+                        updatedEntries
+                    )
+                )
                 return
             }
         }
     }
 
-    override fun deleteEntry(deleted: Entry) {
+    override suspend fun deleteEntry(deleted: Entry) {
         friends.forEach {
             val idx = it.entries.indexOfFirst { entry -> entry.id == deleted.id }
             if (idx > -1) {
                 val updatedEntries = it.entries.toMutableList()
                 updatedEntries.removeAt(idx)
-                update(FriendDetails(it.id, it.name, it.location, it.nightmares, updatedEntries))
+                editFriend(
+                    FriendDetails(
+                        it.id,
+                        it.name,
+                        it.location,
+                        it.nightmares,
+                        updatedEntries
+                    )
+                )
                 return
             }
         }
     }
 
-    private fun update(friend: FriendDetails) {
+    override suspend fun editFriend(friend: FriendDetails) {
         val idx = friends.indexOfFirst { it.id == friend.id }
         if (idx < 0) {
             return
         }
         friends.apply { this[idx] = friend }
         return
+    }
+
+    override suspend fun refreshFriend(friend: FriendDetails) {
+        val existing = friends.firstOrNull { it.id == friend.id }
+        if (existing != null) {
+            return editFriend(friend)
+        }
+        refreshFriend(friend)
     }
 }

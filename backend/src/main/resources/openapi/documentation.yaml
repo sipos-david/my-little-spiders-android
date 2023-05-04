@@ -1,0 +1,374 @@
+openapi: 3.0.0
+info:
+  title: My Little Spiders
+  description: |-
+    Many people are afraid of spiders, but our web-weaving friends are just misunderstood. I want to create a solution to this: a spider counting app that can help us get closer to our eight-legged housemates.
+
+    The app allows us to add our insectivorous friends. We need to give them a name, since this is the first step towards understanding. We can also enter the name of the room they are currently residing and the number of nightmares we had about them. Trust also requires knowing each other, so we can write notes to about spiders, to record their habits or our experiences together. These notes are made up from a date, text and respect gained.
+
+  contact:
+    email: sipisipos@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Roommate
+    description: Everything about your roommates
+  - name: Entries
+    description: Everything about your roommate entries
+paths:
+  /roommate:
+    get:
+      tags:
+        - Roommate
+      summary: Find all roommates
+      description: Get all available roommates
+      operationId: findRoommates
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Roommate'
+        '401':
+          description: Invalid api key
+      security:
+        - api_key: ["Api-Key"]
+    post:
+      tags:
+        - Roommate
+      summary: Add a new roommate
+      description: Add a new roommate to the list
+      operationId: addRoommate
+      requestBody:
+        description: Create a new roommate
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoommateForm'
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roommate'
+        '400':
+          description: Invalid form
+        '401':
+            description: Invalid api key
+      security:
+        - api_key: ["Api-Key"]
+  /roommate/{roommateId}:
+    get:
+      tags:
+        - Roommate
+      summary: Find roommate by Id
+      description: Returns a single roommate
+      operationId: getRoommateById
+      parameters:
+        - name: roommateId
+          in: path
+          description: ID of roommate to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roommate'
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Invalid api key
+        '404':
+          description: Roommate not found
+      security:
+        - api_key: ["Api-Key"]
+    put:
+      tags:
+        - Roommate
+      summary: Update a roommate
+      description: Updates a roommate with form data
+      operationId: updateRoommate
+      parameters:
+        - name: roommateId
+          in: path
+          description: ID of roommate that needs to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Roommate edited data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoommateForm'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roommate'
+        '400':
+          description: Invalid roommateId supplied or invalid form
+        '401':
+          description: Invalid api key
+        '404':
+          description: Roommate not found
+      security:
+        - api_key: ["Api-Key"]
+    delete:
+      tags:
+        - Roommate
+      summary: Deletes a roommate
+      description: Delete a roommate
+      operationId: deleteRoommate
+      parameters:
+        - name: roommateId
+          in: path
+          description: Roommate id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roommate'
+        '400':
+          description: Invalid roommateId supplied
+        '401':
+          description: Invalid api key
+        '404':
+          description: Roommate not found
+      security:
+        - api_key: ["Api-Key"]
+  /roommate/{roommateId}/entries:
+    post:
+      tags:
+        - Entries
+      summary: Add new entry to a roommate
+      description: Add new entry to a roommate
+      operationId: addEntry
+      parameters:
+        - name: roommateId
+          in: path
+          description: ID of roommate
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntryForm'
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '400':
+          description: Invalid roommateId supplied
+        '401':
+          description: Invalid api key
+        '404':
+          description: Roommate not found
+      security:
+        - api_key: ["Api-Key"]
+  /roommate/{roommateId}/entries/{entryId}:
+    put:
+      tags:
+        - Entries
+      summary: Updates an entry for a roommate
+      description: Updates an entry
+      operationId: updateEntry
+      parameters:
+        - name: roommateId
+          in: path
+          description: Id of the roommate which contains the entry
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: entryId
+          in: path
+          description: ID of entry to change
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntryForm'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '400':
+          description: Invalid roommateId or entryId supplied
+        '401':
+          description: Invalid api key
+        '404':
+          description: Roommate or entry not found
+      security:
+        - api_key: ["Api-Key"]
+    delete:
+      tags:
+        - Entries
+      summary: Deletes an entry from a roommate
+      description: Delete an entry
+      operationId: deleteEntry
+      parameters:
+        - name: roommateId
+          in: path
+          description: Id of the roommate which contains the entry
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: entryId
+          in: path
+          description: ID of entry to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '400':
+          description: Invalid roommateId or entryId supplied
+        '401':
+          description: Invalid api key
+        '404':
+          description: Roommate or entry not found
+      security:
+        - api_key: ["Api-Key"]
+components:
+  schemas:
+    Entry:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: You know what this is ;)
+          example: 10
+        date:
+          type: string
+          format: date
+          description: The date when the experience or note happened
+          example: 2023-04-20
+        text:
+          type: string
+          format: text
+          description: A short description for the note, or some cute text
+          example: We had beer together
+        respect:
+          type: integer
+          format: int64
+          example: 69
+          description: A value for how many respect the spider gained after the event
+
+    EntryForm:
+      type: object
+      required: ["text"]
+      properties:
+        date:
+          type: string
+          format: date
+          default: 2023-04-20
+          description: The date when the experience or note happened, default is current server time
+          example: 2023-04-20
+        text:
+          type: string
+          format: text
+          description: A short description for the note, or some cute text
+          example: We had beer together
+        respect:
+          type: integer
+          format: int64
+          example: 69
+          default: 0
+          description: A value for how many respect the spider gained after the event
+
+    Roommate:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          format: text
+          description: The name of the friend
+          example: Alice or Bob...
+        location:
+          type: string
+          format: text
+          description: The room or place where the spider resides in
+          example: Bedroom or kitchen
+        nightmares:
+          type: integer
+          format: int64
+          example: 420
+          description: The number of nightmares with the spider
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entry'
+
+    RoommateForm:
+      type: object
+      required: ["name", "location"]
+      properties:
+        name:
+          type: string
+          format: text
+          description: The name of the friend
+          example: Alice or Bob...
+        location:
+          type: string
+          format: text
+          description: The room or place where the spider resides in
+          example: Bedroom or kitchen
+        nightmares:
+          type: integer
+          format: int64
+          example: 420
+          default: 0
+          description: The number of nightmares with the spider, default is 0
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: Api-Key
+      in: header

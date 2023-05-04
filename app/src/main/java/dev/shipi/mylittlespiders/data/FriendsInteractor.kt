@@ -21,7 +21,7 @@ class FriendsInteractor(
 
     override suspend fun refreshFriends(): List<Friend> {
         val network = friendsApi.getAllFriends()
-        friendsDatabase.saveAll(network)
+        friendsDatabase.refreshAllFriends(network)
         return network.map { Friend(it.id, it.name, it.location) }
     }
 
@@ -32,20 +32,20 @@ class FriendsInteractor(
     override suspend fun refreshFriendDetails(id: Long): FriendDetails? {
         val network = friendsApi.getFriendDetails(id)
         if (network != null) {
-            friendsDatabase.save(network)
+            friendsDatabase.refreshFriend(network)
         }
         return network
     }
 
     override suspend fun addFriend(new: NewFriend) {
         val added = friendsApi.addFriend(new)
-        friendsDatabase.save(added)
+        friendsDatabase.addFriend(added)
     }
 
     override suspend fun editFriend(edited: EditFriend) {
         val updated = friendsApi.editFriend(edited)
         if (updated != null) {
-            friendsDatabase.save(updated)
+            friendsDatabase.editFriend(updated)
         }
     }
 
@@ -63,8 +63,8 @@ class FriendsInteractor(
         }
     }
 
-    override suspend fun editEntry(edited: Entry) {
-        val updated = friendsApi.editEntry(edited)
+    override suspend fun editEntry(friendId: Long, edited: Entry) {
+        val updated = friendsApi.editEntry(friendId, edited)
         if (updated != null) {
             friendsDatabase.editEntry(updated)
         }
