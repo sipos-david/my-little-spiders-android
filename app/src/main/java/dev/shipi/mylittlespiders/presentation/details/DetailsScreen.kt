@@ -1,14 +1,18 @@
 package dev.shipi.mylittlespiders.presentation.details
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -63,6 +67,17 @@ fun Details(
                     )
                 }
                 Column {
+                    if (state.data.entries.isEmpty()) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "No entries added 😞",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
                     state.data.entries.forEach {
                         EntryRow(
                             entry = it,
@@ -91,11 +106,17 @@ class DetailsStatePreviewProvider : PreviewParameterProvider<ViewState<FriendDet
         )
     )
 
+    private val emptyDetails = FriendDetails(
+        2, "Quentin Tarantula", "Movie room", 1, listOf()
+    )
+
     override val values = sequenceOf(
         ViewState.Loading,
         ViewState.Error(Exception("Preview exception")),
         ViewState.Data(details, false),
         ViewState.Data(details, true),
+        ViewState.Data(emptyDetails, false),
+        ViewState.Data(emptyDetails, true),
     )
 }
 

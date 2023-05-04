@@ -3,6 +3,7 @@ package dev.shipi.mylittlespiders.presentation.list
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
@@ -98,6 +99,17 @@ fun ListView(
                 )
                 if (!state.isNetworkAvailable) {
                     NetworkNotAvailableWidget()
+                }
+                if (state.data.isEmpty()) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "No friends available 😭",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
                 }
                 LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)) {
                     items(state.data) { friend ->
