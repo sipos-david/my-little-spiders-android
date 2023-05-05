@@ -24,7 +24,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.shipi.mylittlespiders.components.widgets.DateInputWidget
-import dev.shipi.mylittlespiders.lib.createString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +69,7 @@ fun EntryForm(
                 isError = state.text.hasError,
             )
             OutlinedTextField(
-                value = createString(state.respect.value),
+                value = (state.respect.value ?: "").toString(),
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()

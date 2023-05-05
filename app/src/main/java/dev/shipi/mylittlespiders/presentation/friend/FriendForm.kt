@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.shipi.mylittlespiders.lib.createString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,7 +75,7 @@ fun FriendForm(
                 isError = state.location.hasError,
             )
             OutlinedTextField(
-                value = createString(state.nightmares.value),
+                value = (state.nightmares.value ?: "").toString(),
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -7,7 +7,7 @@ data class EntryFormState(
     val friendId: Long,
     val date: Input.Value<LocalDate?>,
     val text: Input.Value<String>,
-    val respect: Input.Value<Int>,
+    val respect: Input.Value<Int?>,
     val hasErrors: Boolean = true,
     val entryId: Long? = null
 )
