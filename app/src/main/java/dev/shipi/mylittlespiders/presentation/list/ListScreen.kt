@@ -26,11 +26,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import dev.shipi.mylittlespiders.components.ErrorScreen
-import dev.shipi.mylittlespiders.components.LoadingScreen
-import dev.shipi.mylittlespiders.components.NetworkNotAvailableWidget
+import dev.shipi.mylittlespiders.components.screens.ErrorScreen
+import dev.shipi.mylittlespiders.components.screens.LoadingScreen
+import dev.shipi.mylittlespiders.components.widgets.NetworkNotAvailableWidget
 import dev.shipi.mylittlespiders.domain.model.Friend
-import dev.shipi.mylittlespiders.lib.presentation.ViewState
+import dev.shipi.mylittlespiders.components.ViewState
 import dev.shipi.mylittlespiders.presentation.list.view.FriendRow
 import java.lang.Exception
 

@@ -1,4 +1,4 @@
-package dev.shipi.mylittlespiders.components
+package dev.shipi.mylittlespiders.components.widgets
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

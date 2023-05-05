@@ -1,4 +1,4 @@
-package dev.shipi.mylittlespiders.lib.presentation
+package dev.shipi.mylittlespiders.components
 
 
 sealed class ViewState<out T> {

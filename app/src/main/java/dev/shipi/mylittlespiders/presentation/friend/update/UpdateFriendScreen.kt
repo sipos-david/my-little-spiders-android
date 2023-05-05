@@ -3,7 +3,7 @@ package dev.shipi.mylittlespiders.presentation.friend.update
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import dev.shipi.mylittlespiders.lib.presentation.ViewState
+import dev.shipi.mylittlespiders.components.ViewState
 import dev.shipi.mylittlespiders.presentation.friend.FriendFormScreen
 import dev.shipi.mylittlespiders.presentation.friend.FriendFormViewModel
 

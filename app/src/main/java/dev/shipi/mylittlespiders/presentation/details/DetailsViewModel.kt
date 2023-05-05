@@ -7,7 +7,7 @@ import dev.shipi.mylittlespiders.domain.model.FriendDetails
 import dev.shipi.mylittlespiders.domain.usecase.DeleteEntry
 import dev.shipi.mylittlespiders.domain.usecase.GetFriendDetails
 import dev.shipi.mylittlespiders.domain.usecase.RefreshFriendDetails
-import dev.shipi.mylittlespiders.lib.presentation.ViewState
+import dev.shipi.mylittlespiders.components.ViewState
 import dev.shipi.mylittlespiders.services.NetworkObserver
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

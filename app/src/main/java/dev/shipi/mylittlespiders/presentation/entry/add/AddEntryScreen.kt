@@ -3,10 +3,10 @@ package dev.shipi.mylittlespiders.presentation.entry.add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import dev.shipi.mylittlespiders.components.ErrorScreen
-import dev.shipi.mylittlespiders.components.LoadingScreen
-import dev.shipi.mylittlespiders.components.NetworkNotAvailableWidget
-import dev.shipi.mylittlespiders.lib.presentation.ViewState
+import dev.shipi.mylittlespiders.components.screens.ErrorScreen
+import dev.shipi.mylittlespiders.components.screens.LoadingScreen
+import dev.shipi.mylittlespiders.components.widgets.NetworkNotAvailableWidget
+import dev.shipi.mylittlespiders.components.ViewState
 import dev.shipi.mylittlespiders.presentation.entry.EntryForm
 import dev.shipi.mylittlespiders.presentation.entry.EntryFormViewModel
 

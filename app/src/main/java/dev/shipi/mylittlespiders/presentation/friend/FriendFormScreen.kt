@@ -1,10 +1,10 @@
 package dev.shipi.mylittlespiders.presentation.friend
 
 import androidx.compose.runtime.Composable
-import dev.shipi.mylittlespiders.components.ErrorScreen
-import dev.shipi.mylittlespiders.components.LoadingScreen
-import dev.shipi.mylittlespiders.components.NetworkNotAvailableWidget
-import dev.shipi.mylittlespiders.lib.presentation.ViewState
+import dev.shipi.mylittlespiders.components.widgets.NetworkNotAvailableWidget
+import dev.shipi.mylittlespiders.components.ViewState
+import dev.shipi.mylittlespiders.components.screens.ErrorScreen
+import dev.shipi.mylittlespiders.components.screens.LoadingScreen
 
 @Composable
 fun FriendFormScreen(

@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shipi.mylittlespiders.domain.model.Entry
 import dev.shipi.mylittlespiders.domain.usecase.GetFriendDetails
 import dev.shipi.mylittlespiders.domain.usecase.UpdateEntry
-import dev.shipi.mylittlespiders.lib.presentation.ViewState
+import dev.shipi.mylittlespiders.components.ViewState
 import dev.shipi.mylittlespiders.presentation.entry.EntryFormViewModel
 import dev.shipi.mylittlespiders.services.NetworkObserver
 import kotlinx.coroutines.flow.MutableStateFlow

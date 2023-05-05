@@ -1,6 +1,6 @@
 package dev.shipi.mylittlespiders.presentation.entry
 
-import dev.shipi.mylittlespiders.lib.presentation.Input
+import dev.shipi.mylittlespiders.components.forms.Input
 import java.time.LocalDate
 
 data class EntryFormState(

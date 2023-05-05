@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.shipi.mylittlespiders.components.DateInputWidget
+import dev.shipi.mylittlespiders.components.widgets.DateInputWidget
 import dev.shipi.mylittlespiders.lib.createString
 
 @OptIn(ExperimentalMaterial3Api::class)

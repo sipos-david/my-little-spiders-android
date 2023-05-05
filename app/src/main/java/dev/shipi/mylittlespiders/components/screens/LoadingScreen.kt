@@ -1,4 +1,4 @@
-package dev.shipi.mylittlespiders.components
+package dev.shipi.mylittlespiders.components.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,12 +19,12 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorScreen(message: String? = null) {
+fun LoadingScreen() {
     Column {
         LargeTopAppBar(
             title = {
                 Text(
-                    text = "Oh no!",
+                    text = "Loading...",
                     style = MaterialTheme.typography.headlineMedium
                 )
             },
@@ -38,38 +36,15 @@ fun ErrorScreen(message: String? = null) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column {
-                Icon(
-                    modifier = Modifier
-                        .height(128.dp)
-                        .width(128.dp),
-                    imageVector = Icons.Rounded.Warning,
-                    contentDescription = "Warning symbol",
-                    tint = MaterialTheme.colorScheme.error
-                )
-                Text(
-                    text = "Something went wrong",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                if (message != null) {
-                    Text(
-                        text = message,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
+            CircularProgressIndicator(modifier = Modifier
+                .height(64.dp)
+                .width(64.dp))
         }
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun ErrorScreenWithMessagePreview() {
-    ErrorScreen("Reason")
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ErrorScreenNoMessagePreview() {
-    ErrorScreen()
+fun LoadingScreenPreview() {
+    LoadingScreen()
 }
