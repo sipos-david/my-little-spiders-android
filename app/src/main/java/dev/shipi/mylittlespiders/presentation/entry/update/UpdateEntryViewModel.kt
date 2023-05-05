@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shipi.mylittlespiders.domain.model.Entry
-import dev.shipi.mylittlespiders.domain.usecase.CheckNetworkState
 import dev.shipi.mylittlespiders.domain.usecase.GetFriendDetails
 import dev.shipi.mylittlespiders.domain.usecase.UpdateEntry
 import dev.shipi.mylittlespiders.lib.presentation.ViewState
 import dev.shipi.mylittlespiders.presentation.entry.EntryFormViewModel
+import dev.shipi.mylittlespiders.services.NetworkObserver
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,10 +20,24 @@ import javax.inject.Inject
 class UpdateEntryViewModel @Inject constructor(
     private val updateEntry: UpdateEntry,
     private val getFriendDetails: GetFriendDetails,
-    private val checkNetworkState: CheckNetworkState
+    private val networkObserver: NetworkObserver
 ) : ViewModel() {
     private val _state = MutableStateFlow<ViewState<EntryFormViewModel>>(ViewState.Loading)
     val state = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            networkObserver.networkAvailable.collect { network ->
+                _state.update {
+                    if (it is ViewState.Data) {
+                        it.copy(network.toBoolean())
+                    } else {
+                        it
+                    }
+                }
+            }
+        }
+    }
 
     fun showEntryDetails(friendId: String?, entryId: String?) {
         viewModelScope.launch {
@@ -54,7 +68,7 @@ class UpdateEntryViewModel @Inject constructor(
                         setRespect(edited.respect.toString())
                     }
 
-                    ViewState.Data(formViewModel, checkNetworkState())
+                    ViewState.Data(formViewModel, networkObserver.isConnected)
                 } catch (e: Exception) {
                     ViewState.Error(e)
                 }

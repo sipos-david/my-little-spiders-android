@@ -23,14 +23,15 @@ import dev.shipi.mylittlespiders.presentation.entry.add.AddEntryScreen
 import dev.shipi.mylittlespiders.presentation.entry.add.AddEntryViewModel
 import dev.shipi.mylittlespiders.presentation.entry.update.UpdateEntryScreen
 import dev.shipi.mylittlespiders.presentation.entry.update.UpdateEntryViewModel
-
 import dev.shipi.mylittlespiders.presentation.friend.add.AddFriendScreen
 import dev.shipi.mylittlespiders.presentation.friend.add.AddFriendViewModel
 import dev.shipi.mylittlespiders.presentation.friend.update.UpdateFriendScreen
 import dev.shipi.mylittlespiders.presentation.friend.update.UpdateFriendViewModel
 import dev.shipi.mylittlespiders.presentation.list.ListScreen
 import dev.shipi.mylittlespiders.presentation.list.ListViewModel
+import dev.shipi.mylittlespiders.services.NetworkObserver
 import dev.shipi.mylittlespiders.ui.theme.MyLittleSpidersTheme
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -41,9 +42,15 @@ class MainActivity : ComponentActivity() {
     private val addEntryViewModel: AddEntryViewModel by viewModels()
     private val updateEntryViewModel: UpdateEntryViewModel by viewModels()
 
+    @Inject
+    lateinit var networkObserver: NetworkObserver
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycle.addObserver(networkObserver)
+
         setContent {
             val navController = rememberNavController()
 
