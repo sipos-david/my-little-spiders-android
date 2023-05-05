@@ -25,9 +25,6 @@ sealed class Input<T>(
     class MinInt(private val min: Int = 0, initial: Int? = null) :
         Input<Int?>(initial, initial != null && initial < min, { it != null && it < min })
 
-    class RequiredMinInt(private val min: Int = 0, initial: Int = 0) :
-        Input<Int>(initial, initial < min, { it < min })
-
     class RequiredDate(initial: LocalDate? = null) :
         Input<LocalDate?>(initial, initial == null, { it == null })
 }

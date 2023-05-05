@@ -13,7 +13,7 @@ class EntryFormViewModel(friendId: Long) : ViewModel() {
 
     private val date = Input.RequiredDate()
     private val text = Input.RequiredString()
-    private val respect = Input.RequiredMinInt()
+    private val respect = Input.MinInt()
 
     private val _state =
         MutableStateFlow(

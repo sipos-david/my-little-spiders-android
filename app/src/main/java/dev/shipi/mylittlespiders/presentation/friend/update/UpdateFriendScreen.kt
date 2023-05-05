@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import dev.shipi.mylittlespiders.components.ViewState
-import dev.shipi.mylittlespiders.presentation.friend.FriendFormScreen
+import dev.shipi.mylittlespiders.presentation.friend.FriendForm
 import dev.shipi.mylittlespiders.presentation.friend.FriendFormViewModel
 
 @Composable
@@ -14,7 +14,7 @@ fun UpdateFriendScreen(
     onNavigateBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
-    FriendFormScreen(
+    FriendForm(
         state = state,
         title = "Edit roommate",
         submit = "Ok",

@@ -23,75 +23,88 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.shipi.mylittlespiders.components.ViewState
+import dev.shipi.mylittlespiders.components.screens.ErrorScreen
+import dev.shipi.mylittlespiders.components.screens.LoadingScreen
 import dev.shipi.mylittlespiders.components.widgets.DateInputWidget
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EntryForm(
-    viewModel: EntryFormViewModel,
+    state: ViewState<EntryFormViewModel>,
     title: String,
     submit: String,
     onSubmit: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    val state by viewModel.state.collectAsState()
+    when (state) {
+        is ViewState.Data -> {
+            val viewModel = state.data
+            val form by state.data.state.collectAsState()
 
-    Column {
-        LargeTopAppBar(
-            title = {
-                Text(text = title)
-            },
-            navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        imageVector = Icons.Outlined.ArrowBack,
-                        contentDescription = "Navigate back"
+            Column {
+                LargeTopAppBar(
+                    title = {
+                        Text(text = title)
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.onBackground,
+                                imageVector = Icons.Outlined.ArrowBack,
+                                contentDescription = "Navigate back"
+                            )
+                        }
+                    }
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    DateInputWidget(state = form.date.value, setState = viewModel::setDate)
+                    OutlinedTextField(
+                        value = form.text.value,
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 32.dp),
+                        onValueChange = viewModel::setText,
+                        label = { Text("Text") },
+                        isError = form.text.hasError,
                     )
+                    OutlinedTextField(
+                        value = (form.respect.value ?: "").toString(),
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 32.dp),
+                        onValueChange = viewModel::setRespect,
+                        label = { Text("Respect") },
+                        isError = form.respect.hasError,
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    )
+                    Button(
+                        modifier = Modifier.padding(top = 64.dp),
+                        onClick = onSubmit,
+                        enabled = !form.hasErrors && state.isNetworkAvailable
+                    ) {
+                        Text(text = submit)
+                    }
+
                 }
-            }
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            DateInputWidget(state = state.date.value, setState = viewModel::setDate)
-            OutlinedTextField(
-                value = state.text.value,
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 32.dp),
-                onValueChange = viewModel::setText,
-                label = { Text("Text") },
-                isError = state.text.hasError,
-            )
-            OutlinedTextField(
-                value = (state.respect.value ?: "").toString(),
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 32.dp),
-                onValueChange = viewModel::setRespect,
-                label = { Text("Respect") },
-                isError = state.respect.hasError,
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            )
-            Button(
-                modifier = Modifier.padding(top = 64.dp),
-                onClick = onSubmit,
-                enabled = !state.hasErrors
-            ) {
-                Text(text = submit)
+
             }
         }
+
+        is ViewState.Error -> ErrorScreen(state.e.message)
+        ViewState.Loading -> LoadingScreen()
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun EntryFormPreview() {
-    EntryForm(EntryFormViewModel(0), "Title", "Submit", { }, { })
+    EntryForm(ViewState.Data(EntryFormViewModel(0), true), "Title", "Submit", { }, { })
 }

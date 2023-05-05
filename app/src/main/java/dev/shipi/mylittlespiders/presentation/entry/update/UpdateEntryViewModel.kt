@@ -89,7 +89,7 @@ class UpdateEntryViewModel @Inject constructor(
                     it,
                     data.date.value ?: LocalDate.now(),
                     data.text.value,
-                    data.respect.value
+                    data.respect.value ?: 0
                 )
             }?.let {
                 updateEntry(

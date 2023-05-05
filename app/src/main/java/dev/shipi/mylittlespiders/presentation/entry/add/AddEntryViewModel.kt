@@ -65,7 +65,7 @@ class AddEntryViewModel @Inject constructor(
                 NewEntry(
                     data.date.value ?: LocalDate.now(),
                     data.text.value,
-                    data.respect.value
+                    data.respect.value ?: 0
                 )
             )
         }
