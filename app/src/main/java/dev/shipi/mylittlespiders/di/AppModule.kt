@@ -21,7 +21,6 @@ import dev.shipi.mylittlespiders.data.network.client.auth.ApiKeyAuth
 import dev.shipi.mylittlespiders.data.network.client.infrastructure.ApiClient
 import dev.shipi.mylittlespiders.domain.usecase.AddEntry
 import dev.shipi.mylittlespiders.domain.usecase.AddFriend
-import dev.shipi.mylittlespiders.domain.usecase.CheckNetworkState
 import dev.shipi.mylittlespiders.domain.usecase.DeleteEntry
 import dev.shipi.mylittlespiders.domain.usecase.DeleteFriend
 import dev.shipi.mylittlespiders.domain.usecase.GetFriendDetails
@@ -30,6 +29,7 @@ import dev.shipi.mylittlespiders.domain.usecase.RefreshFriendDetails
 import dev.shipi.mylittlespiders.domain.usecase.RefreshFriendList
 import dev.shipi.mylittlespiders.domain.usecase.UpdateEntry
 import dev.shipi.mylittlespiders.domain.usecase.UpdateFriend
+import dev.shipi.mylittlespiders.services.NetworkObserver
 import javax.inject.Singleton
 
 @Module
@@ -83,11 +83,17 @@ object AppModule {
     fun provideApi(roommateApi: RoommateApi, entriesApi: EntriesApi): FriendsApi =
         FriendsApiNetwork(roommateApi, entriesApi)
 
-    //  Create data layer
+    // Create data layer
 
     @Provides
     @Singleton
     fun provideInteractor(db: FriendsDatabase, api: FriendsApi) = FriendsInteractor(api, db)
+
+    // Create services
+
+    @Provides
+    @Singleton
+    fun provideNetworkObserver(@ApplicationContext context: Context) = NetworkObserver(context)
 
     // Create use cases
 
@@ -131,9 +137,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUpdateFriend(interactor: FriendsInteractor) = UpdateFriend(interactor)
-
-    @Provides
-    @Singleton
-    fun provideCheckNetworkState() = CheckNetworkState()
-
 }

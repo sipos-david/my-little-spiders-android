@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shipi.mylittlespiders.domain.model.FriendDetails
-import dev.shipi.mylittlespiders.domain.usecase.CheckNetworkState
 import dev.shipi.mylittlespiders.domain.usecase.DeleteEntry
 import dev.shipi.mylittlespiders.domain.usecase.GetFriendDetails
 import dev.shipi.mylittlespiders.domain.usecase.RefreshFriendDetails
-import dev.shipi.mylittlespiders.lib.presentation.ViewState
+import dev.shipi.mylittlespiders.components.ViewState
+import dev.shipi.mylittlespiders.services.NetworkObserver
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,10 +20,24 @@ class DetailsViewModel @Inject constructor(
     private val getFriendDetails: GetFriendDetails,
     private val refreshFriendDetails: RefreshFriendDetails,
     private val deleteEntry: DeleteEntry,
-    private val checkNetworkState: CheckNetworkState
+    private val networkObserver: NetworkObserver
 ) : ViewModel() {
     private val _state = MutableStateFlow<ViewState<FriendDetails>>(ViewState.Loading)
     val state = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            networkObserver.networkAvailable.collect { network ->
+                _state.update {
+                    if (it is ViewState.Data) {
+                        it.copy(network.toBoolean())
+                    } else {
+                        it
+                    }
+                }
+            }
+        }
+    }
 
     fun showFriendDetails(friendId: String?) {
         viewModelScope.launch {
@@ -34,7 +48,7 @@ class DetailsViewModel @Inject constructor(
                             ?: throw Exception("Friend id missing or invalid format!")
                     val details =
                         getFriendDetails(id) ?: throw Exception("Friend with id:$id not found!")
-                    ViewState.Data(details, checkNetworkState())
+                    ViewState.Data(details, networkObserver.isConnected)
                 } catch (e: Exception) {
                     ViewState.Error(e)
                 }
@@ -57,7 +71,7 @@ class DetailsViewModel @Inject constructor(
                     val updated = refreshFriendDetails(details.id) ?: return@update ViewState.Error(
                         Exception("Cannot delete entry")
                     )
-                    ViewState.Data(updated, checkNetworkState())
+                    ViewState.Data(updated, networkObserver.isConnected)
                 }
             } catch (e: Exception) {
                 _state.update {

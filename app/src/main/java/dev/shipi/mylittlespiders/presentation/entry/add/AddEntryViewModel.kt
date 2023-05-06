@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shipi.mylittlespiders.domain.model.NewEntry
 import dev.shipi.mylittlespiders.domain.usecase.AddEntry
-import dev.shipi.mylittlespiders.domain.usecase.CheckNetworkState
-import dev.shipi.mylittlespiders.lib.presentation.ViewState
+import dev.shipi.mylittlespiders.components.ViewState
 import dev.shipi.mylittlespiders.presentation.entry.EntryFormViewModel
+import dev.shipi.mylittlespiders.services.NetworkObserver
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,11 +19,25 @@ import javax.inject.Inject
 @HiltViewModel
 class AddEntryViewModel @Inject constructor(
     private val addEntry: AddEntry,
-    private val checkNetworkState: CheckNetworkState
+    private val networkObserver: NetworkObserver
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<ViewState<EntryFormViewModel>>(ViewState.Loading)
     val state = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            networkObserver.networkAvailable.collect { network ->
+                _state.update {
+                    if (it is ViewState.Data) {
+                        it.copy(network.toBoolean())
+                    } else {
+                        it
+                    }
+                }
+            }
+        }
+    }
 
     fun showEntryDetails(friendId: String?) {
         viewModelScope.launch {
@@ -32,7 +46,7 @@ class AddEntryViewModel @Inject constructor(
                     ?: return@update ViewState.Error(Exception("Friend id missing or invalid format!"))
                 ViewState.Data(
                     EntryFormViewModel.create(id),
-                    checkNetworkState()
+                    networkObserver.isConnected
                 )
             }
         }
@@ -51,7 +65,7 @@ class AddEntryViewModel @Inject constructor(
                 NewEntry(
                     data.date.value ?: LocalDate.now(),
                     data.text.value,
-                    data.respect.value
+                    data.respect.value ?: 0
                 )
             )
         }
