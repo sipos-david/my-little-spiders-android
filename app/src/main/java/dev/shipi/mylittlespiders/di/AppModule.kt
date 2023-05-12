@@ -2,6 +2,8 @@ package dev.shipi.mylittlespiders.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,6 +37,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    // Create analytics
+
+    @Provides
+    @Singleton
+    fun provideAnalytics() = Firebase.analytics
+
     //  Create persistence layer
     @Provides
     @Singleton
