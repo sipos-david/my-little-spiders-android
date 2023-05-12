@@ -1,9 +1,10 @@
-package dev.shipi.mylittlespiders.data.local
+package dev.shipi.mylittlespiders.data.interactor.fake
 
+import dev.shipi.mylittlespiders.data.local.FriendsDatabase
 import dev.shipi.mylittlespiders.domain.model.Entry
 import dev.shipi.mylittlespiders.domain.model.FriendDetails
 
-class FriendsDatabaseMock : FriendsDatabase {
+class FakeFriendsDatabase : FriendsDatabase {
     private val friends = mutableListOf<FriendDetails>()
 
     override suspend fun getAllFriends(): List<FriendDetails> {
