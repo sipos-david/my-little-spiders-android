@@ -2,6 +2,8 @@ package dev.shipi.mylittlespiders.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shipi.mylittlespiders.domain.model.Friend
 import dev.shipi.mylittlespiders.domain.usecase.DeleteFriend
@@ -20,7 +22,8 @@ class ListViewModel @Inject constructor(
     private val refreshFriendList: RefreshFriendList,
     private val getFriendList: GetFriendList,
     private val deleteFriend: DeleteFriend,
-    private val networkObserver: NetworkObserver
+    private val networkObserver: NetworkObserver,
+    private val firebaseAnalytics: FirebaseAnalytics
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<ViewState<List<Friend>>>(ViewState.Loading)
@@ -28,6 +31,11 @@ class ListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
+                param(FirebaseAnalytics.Param.ITEM_NAME, "Roommate list")
+                param(FirebaseAnalytics.Param.CONTENT_TYPE, "roommate list")
+            }
+
             launch {
                 getFriendList().collect { list ->
                     _state.update { ViewState.Data(list, networkObserver.isConnected) }
