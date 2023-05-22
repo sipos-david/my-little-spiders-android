@@ -2,7 +2,7 @@ package dev.shipi.mylittlespiders.presentation.entry
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.shipi.mylittlespiders.lib.presentation.Input
+import dev.shipi.mylittlespiders.components.forms.Input
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -13,7 +13,7 @@ class EntryFormViewModel(friendId: Long) : ViewModel() {
 
     private val date = Input.RequiredDate()
     private val text = Input.RequiredString()
-    private val respect = Input.RequiredMinInt()
+    private val respect = Input.MinInt()
 
     private val _state =
         MutableStateFlow(

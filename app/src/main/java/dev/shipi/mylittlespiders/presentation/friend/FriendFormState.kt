@@ -1,6 +1,6 @@
 package dev.shipi.mylittlespiders.presentation.friend
 
-import dev.shipi.mylittlespiders.lib.presentation.Input
+import dev.shipi.mylittlespiders.components.forms.Input
 
 data class FriendFormState(
     val name: Input.Value<String>,
