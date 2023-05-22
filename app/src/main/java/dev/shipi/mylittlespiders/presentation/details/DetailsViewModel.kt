@@ -2,6 +2,8 @@ package dev.shipi.mylittlespiders.presentation.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shipi.mylittlespiders.domain.model.FriendDetails
 import dev.shipi.mylittlespiders.domain.usecase.DeleteEntry
@@ -20,7 +22,8 @@ class DetailsViewModel @Inject constructor(
     private val getFriendDetails: GetFriendDetails,
     private val refreshFriendDetails: RefreshFriendDetails,
     private val deleteEntry: DeleteEntry,
-    private val networkObserver: NetworkObserver
+    private val networkObserver: NetworkObserver,
+    private val firebaseAnalytics: FirebaseAnalytics
 ) : ViewModel() {
     private val _state = MutableStateFlow<ViewState<FriendDetails>>(ViewState.Loading)
     val state = _state.asStateFlow()
@@ -48,6 +51,11 @@ class DetailsViewModel @Inject constructor(
                             ?: throw Exception("Friend id missing or invalid format!")
                     val details =
                         getFriendDetails(id) ?: throw Exception("Friend with id:$id not found!")
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM) {
+                        param(FirebaseAnalytics.Param.ITEM_ID, id)
+                        param(FirebaseAnalytics.Param.ITEM_NAME, details.name)
+                        param(FirebaseAnalytics.Param.CONTENT_TYPE, "roommate details")
+                    }
                     ViewState.Data(details, networkObserver.isConnected)
                 } catch (e: Exception) {
                     ViewState.Error(e)
